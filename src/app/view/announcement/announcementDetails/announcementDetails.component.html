@@ -1,0 +1,85 @@
+<style>
+  mat-form-field {
+    width: 80%;
+    margin-top: 5px;
+  }
+
+  mat-icon {
+    margin-left: 10px;
+  }
+</style>
+<div style="width: 100%;display: block">
+  <h2 style="padding-left: 15px;margin-right: 10px; display: inline-block">Create Announcement</h2>
+  <button mat-raised-button style="margin-right: 10px; display: inline-block" (click)="save()">
+    Save
+  </button>
+  <button mat-raised-button mat-dialog-close style="display: inline-block" (click)="close()">
+    Close
+  </button>
+</div>
+<mat-divider></mat-divider>
+<div style="padding: 0 30%">
+  <mat-form-field appearance="fill">
+    <mat-label>[Select contacts]</mat-label>
+    <mat-select multiple [(ngModel)]="announcement.contacts">
+      <mat-option *ngFor="let contact of contacts" [value]="contact">{{contact.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-icon>add_box</mat-icon>
+  <br>
+  <mat-form-field appearance="fill">
+    <mat-label>[Select announcement type]</mat-label>
+    <mat-select [(ngModel)]="announcement.announcementType.announcementTypeId">
+      <mat-option *ngFor="let announcementType of announcementTypes"
+                  [value]="announcementType.announcementTypeId">{{announcementType.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="fill">
+    <mat-label>[Select measure]</mat-label>
+    <mat-select [(ngModel)]="announcement.measure.measureCode">
+      <mat-option *ngFor="let measure of measures" [value]="measure.measureCode">{{measure.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div
+    style="width: 100%;overflow-x: scroll; overflow-y: hidden;white-space: nowrap;max-height: 650px;position: relative;display: block">
+    <mat-card class="example-card" *ngFor="let product of products"
+              style="position:relative; display: inline-block;margin-right: 10px; margin-bottom: 5px">
+      <mat-card-header>
+        <mat-card-title>{{product.name}}</mat-card-title>
+        <mat-card-subtitle>{{product.category}}</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image src="https://drive.google.com/uc?export=view&id={{product.image}}"
+           style="max-height: 350px; max-width: 465px">
+      <mat-card-content>
+        <p>
+          Описание: {{product.description}}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button>EDIT</button>
+        <mat-checkbox (change)="selectProduct(product, $event)" [(ngModel)]="product.selectedForAnnouncement" [checked]="product.selectedForAnnouncement">Select</mat-checkbox>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <mat-form-field appearance="fill" style="width: 20%">
+    <mat-label>Price</mat-label>
+    <input matInput [(ngModel)]="announcement.price" type="number">
+  </mat-form-field>
+  <mat-form-field appearance="fill" style="width: 40%; margin-left: 10px">
+    <mat-label>[Select currency sign]</mat-label>
+    <mat-select [(ngModel)]="announcement.currencySign">
+      <mat-option *ngFor="let currency of getCurrencySigns()"
+                  [value]="currency" [innerHTML]="currency"></mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="fill" style="width: 100%">
+    <mat-label>Description</mat-label>
+    <textarea matInput style="height: 200px" [(ngModel)]="announcement.text"></textarea>
+  </mat-form-field>
+</div>
+<h2 style="padding-left: 15px">Mark territory for delivery</h2>
+<mat-divider style="margin-bottom: 10px"></mat-divider>
+
+<div id="map" style="margin-bottom: 10px"></div>

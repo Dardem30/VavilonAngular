@@ -1,0 +1,225 @@
+<div style="display: flex;flex-flow: column;height: 100%">
+  <mat-toolbar color="primary" style="color: black; background-color: #3d3c3a; flex: 0 1 90px;">
+    <button mat-icon-button *ngIf="sidenav.mode === 'over'" style="color: white" (click)="sidenav.toggle()">
+      <mat-icon *ngIf="!sidenav.opened">
+        menu
+      </mat-icon>
+      <mat-icon *ngIf="sidenav.opened">
+        close
+      </mat-icon>
+    </button>
+    <span style="width: 40%"></span>
+    <span style="color: white; font-family: Georgia, serif;font-size: 40px;">VAVILON</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button style="margin-right: 20px" (click)="onSearchIconClick()" *ngIf="activeTab == tabs.HOME">
+      <mat-icon aria-hidden="false" aria-label="Example search icon" style="color: white">search</mat-icon>
+    </button>
+    <button mat-icon-button *ngIf="authSideNav.mode === 'over' && !getProfileInfo().loggedIn" style="color: white"
+            (click)="authSideNav.toggle()">
+      <mat-icon aria-hidden="false" aria-label="Example login icon" style="color: white" *ngIf="!authSideNav.opened">
+        login
+      </mat-icon>
+      <mat-icon *ngIf="authSideNav.opened">
+        close
+      </mat-icon>
+      <mat-icon *ngIf="getProfileInfo().loggedIn">
+        logout
+      </mat-icon>
+    </button>
+    <button mat-icon-button *ngIf="getProfileInfo().loggedIn" style="color: white" (click)="logout()">
+      <mat-icon>
+        logout
+      </mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-sidenav-container style="flex: 1 1 auto;">
+    <mat-sidenav #sidenav="matSidenav">
+
+      <img class="avatar mat-elevation-z8" src="https://source.unsplash.com/c_GmwfHBDzk/200x200"/>
+
+      <h4 class="name">{{getProfileInfo().firstName}} {{getProfileInfo().lastName}}</h4>
+      <p class="designation">ИП</p>
+
+      <mat-divider></mat-divider>
+
+      <button mat-button class="menu-button" (click)="switchTab(tabs.HOME, null, true)">
+        <mat-icon>home</mat-icon>
+        <span>Main</span>
+      </button>
+      <button mat-button class="menu-button" (click)="switchTab(tabs.ANNOUNCEMENT, null, true)" *ngIf="getProfileInfo().loggedIn">
+        <mat-icon>gavel</mat-icon>
+        <span>Announcements</span>
+      </button>
+      <button mat-button class="menu-button" (click)="switchTab(tabs.PRODUCTS, null, true)" *ngIf="getProfileInfo().loggedIn">
+        <mat-icon>shopping_cart</mat-icon>
+        <span>Products</span>
+      </button>
+      <button mat-button class="menu-button" (click)="switchTab(tabs.CARDS, null, true)" *ngIf="getProfileInfo().loggedIn">
+        <mat-icon>credit_card</mat-icon>
+        <span>Cards</span>
+      </button>
+      <button mat-button class="menu-button" (click)="switchTab(tabs.CONTACT, null, true)" *ngIf="getProfileInfo().loggedIn">
+        <mat-icon>contacts</mat-icon>
+        <span>Contacts</span>
+      </button>
+
+      <mat-divider></mat-divider>
+
+      <button mat-button class="menu-button">
+        <mat-icon>help</mat-icon>
+        <span>Help</span>
+      </button>
+
+    </mat-sidenav>
+    <mat-sidenav id="authSideNav" #authSideNav position="end" style="width: 340px">
+
+      <h3 class="name">Добро пожаловать в Vavilon</h3>
+      <h4 class="designation" *ngIf="authState == authStates.Login">Пожалуйста войдите в аккаунт</h4>
+      <h4 class="designation" *ngIf="authState == authStates.Registration">Пожалуйста заполните все поля
+        регистрации</h4>
+      <h4 class="designation" *ngIf="authState == authStates.VerificationCode">Пожалуйста введите код отправленный на
+        ящик {{verificationEmail}}</h4>
+      <mat-divider></mat-divider>
+
+
+      <form #loginForm [ngStyle]="{display: authState != authStates.Login ? 'none' : 'block'}">
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">Login</mat-label>
+          <input matInput [(ngModel)]="authForm.login" [formControl]="loginValidator" [errorStateMatcher]="matcher">
+          <mat-error *ngIf="loginValidator.invalid">
+            This field is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+
+        <br>
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">Password</mat-label>
+          <input matInput type="password" [(ngModel)]="authForm.password" [formControl]="passwordValidator"
+                 [errorStateMatcher]="matcher">
+          <mat-error *ngIf="passwordValidator.invalid">
+            This field is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </form>
+      <form #verificationForm [ngStyle]="{display: authState != authStates.VerificationCode ? 'none' : 'block'}">
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">Code</mat-label>
+          <input matInput [(ngModel)]="verificationModel.activationCode" [formControl]="verificationCodeValidator"
+                 [errorStateMatcher]="matcher">
+          <mat-error *ngIf="verificationCodeValidator.invalid">
+            This field is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </form>
+
+      <div #registrationForm [ngStyle]="{display: authState != authStates.Registration ? 'none' : 'block'}">
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">First name</mat-label>
+          <input matInput [(ngModel)]="registrationModel.firstName" [formControl]="firstNameValidator"
+                 [errorStateMatcher]="matcher">
+          <mat-error *ngIf="firstNameValidator.invalid">
+            This field is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">Last name</mat-label>
+          <input matInput [(ngModel)]="registrationModel.lastName" [formControl]="lastNameValidator"
+                 [errorStateMatcher]="matcher">
+          <mat-error *ngIf="lastNameValidator.invalid">
+            This field is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">Login</mat-label>
+          <input matInput [(ngModel)]="registrationModel.login" [formControl]="registrationLoginValidator"
+                 [errorStateMatcher]="matcher">
+          <mat-error *ngIf="registrationLoginValidator.invalid">
+            This field is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">Email</mat-label>
+          <input matInput type="email" [(ngModel)]="registrationModel.email" [formControl]="emailValidator"
+                 [errorStateMatcher]="matcher">
+          <mat-error *ngIf="emailValidator.hasError('required')">
+            This field is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="emailValidator.hasError('email')">
+            The email is <strong>incorrect</strong>
+          </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label style="color: white; opacity: 0.5">Password</mat-label>
+          <input matInput type="password" [(ngModel)]="registrationModel.password"
+                 [formControl]="registrationPasswordValidator" [errorStateMatcher]="matcher">
+          <mat-error style="padding-bottom: 20px" *ngIf="registrationPasswordValidator.invalid">
+            This field is <strong>required</strong> and minimum length of password is 6 and maximum is 18
+          </mat-error>
+        </mat-form-field>
+
+      </div>
+      <mat-divider></mat-divider>
+
+      <button *ngIf="authState == authStates.Login" mat-button class="menu-button" style="display: block;margin: auto;"
+              (click)="login()">
+        <span>Войти</span>
+      </button>
+      <button *ngIf="authState == authStates.Login" mat-button class="menu-button" style="display: block;margin: auto;">
+        <span>Забыли пароль?</span>
+      </button>
+      <button *ngIf="authState == authStates.Login" mat-button class="menu-button" style="display: block;margin: auto;"
+              (click)="switchAuthForm(authStates.Registration)">
+        <span>Регистрация</span>
+      </button>
+      <button *ngIf="authState == authStates.Registration" mat-button class="menu-button"
+              style="display: block;margin: auto;"
+              (click)="registration()">
+        <span>Регистрация</span>
+      </button>
+      <button *ngIf="authState == authStates.VerificationCode" mat-button class="menu-button"
+              style="display: block;margin: auto;"
+              (click)="activateUser()">
+        <span>Подтвердить</span>
+      </button>
+      <button *ngIf="authState == authStates.Registration || authState == authStates.VerificationCode" mat-button
+              class="menu-button" style="display: block;margin: auto;"
+              (click)="switchAuthForm(authStates.Login)">
+        <span>Войти в аккаунт</span>
+      </button>
+      <br>
+      <div style="color: #f44336">{{authSideNavErrorMessage}}</div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div style="display: flex;flex-flow: column;height: 100%">
+        <div style="flex: 0 1 200px;">
+          <mat-accordion>
+            <mat-expansion-panel #accordionHeader (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header *ngIf="false"></mat-expansion-panel-header>
+              <mat-form-field appearance="fill" style="width: 100%">
+                <mat-label>Search text</mat-label>
+                <input matInput [(ngModel)]="announcementSearchForm.content">
+              </mat-form-field>
+              <br>
+              <div id="main-map" style="width: 100%; height: 300px"></div>
+              <mat-divider></mat-divider>
+              <button mat-button style="display: block;width: 100%; color: #3d3c3a" (click)="searchAnnouncement()">
+                Search
+              </button>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <img src="../../../assets/logo.png" style="display: block;margin: 15px auto;width: 80%;">
+          <mat-divider></mat-divider>
+        </div>
+        <div style="flex: 1 1 auto;">
+          <div #mainContent></div>
+        </div>
+      </div>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</div>

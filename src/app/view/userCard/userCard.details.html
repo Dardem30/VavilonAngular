@@ -1,0 +1,77 @@
+<style>
+  br {
+    margin-bottom: 10px;
+  }
+
+  mat-radio-button {
+    margin-right: 10px;
+  }
+
+  label {
+    display: inline-block;
+    width: 90px;
+    max-width: 90px;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  mat-radio-button {
+    width: 120px;
+  }
+</style>
+<h2>User card details</h2>
+<mat-divider style="margin-bottom: 10px"></mat-divider>
+<mat-form-field appearance="fill">
+  <mat-label>Card name</mat-label>
+  <input matInput [(ngModel)]="userCard.name" required>
+</mat-form-field>
+<br>
+<div>
+  <label>Action type: </label>
+  <mat-radio-group [(ngModel)]="userCard.actionType" >
+    <mat-radio-button [value]="actionTypes.BUYER">Buyer</mat-radio-button>
+    <mat-radio-button [value]="actionTypes.SELLER">Seller</mat-radio-button>
+  </mat-radio-group>
+</div>
+<br>
+<div>
+  <label>User type: </label>
+  <mat-radio-group [(ngModel)]="userCard.userType">
+    <mat-radio-button [value]="userTypes.INDIVIDUAL">Individual</mat-radio-button>
+    <mat-radio-button [value]="userTypes.PHYSICAL">Physical</mat-radio-button>
+    <mat-radio-button [value]="userTypes.LEGAL_ENTITY">Legal entity</mat-radio-button>
+  </mat-radio-group>
+</div>
+<br>
+<mat-form-field appearance="fill">
+  <mat-label>Inn</mat-label>
+  <input matInput type="number" [(ngModel)]="userCard.inn">
+</mat-form-field>
+<br>
+<mat-form-field appearance="fill" style="width: 650px">
+  <mat-label>Description</mat-label>
+  <textarea matInput style="height: 200px" [(ngModel)]="userCard.description"></textarea>
+</mat-form-field>
+<mat-divider></mat-divider>
+<div style="place-content: end; margin-top: 10px; float: right">
+  <button mat-raised-button style="margin-right: 10px" (click)="saveCard()">
+    Save
+  </button>
+  <button #userCardCloseButton mat-raised-button mat-dialog-close>
+    Close
+  </button>
+</div>

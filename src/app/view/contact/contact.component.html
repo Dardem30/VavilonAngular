@@ -1,0 +1,26 @@
+<div style="height: 100%">
+  <table>
+    <thead>
+    <tr>
+      <th style="width: 20%">Name</th>
+      <th style="width: 20%">Contact type</th>
+      <th style="width: 60%">Value</th>
+    </tr>
+    </thead>
+    <tbody *ngFor="let contact of contacts">
+    <tr (click)="openContactDetails(contact)" class="row">
+      <td><strong>{{contact.name}}</strong></td>
+      <td>{{contact.contactType.name}}</td>
+      <td>{{contact.value}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<mat-toolbar class="mat-paginator-sticky">
+  <button mat-raised-button style="margin-right: 20px" (click)="openContactDetails(null)">
+    Add contact
+  </button>
+  <button mat-raised-button>
+    Delete selected contacts
+  </button>
+</mat-toolbar>

@@ -1,0 +1,37 @@
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs";
+import {AppComponent} from "../app.component";
+import {HttpClient} from "@angular/common/http";
+import {ProfileInfo} from "../bo/ProfileInfo";
+
+@Injectable()
+export class SecurityService {
+
+  constructor(private http: HttpClient) {
+
+  }
+  login(loginForm: any): Observable<any> {
+    return this.http.post<any>(AppComponent.apiEndpoint + 'login', loginForm, {
+      withCredentials: true
+    });
+  }
+
+  registration(registrationModel: any): Observable<any> {
+    return this.http.post<any>(AppComponent.apiEndpoint + 'registration', registrationModel);
+  }
+
+  activateUser(verificationModel: any) {
+    return this.http.post<any>(AppComponent.apiEndpoint + 'activateUser', verificationModel);
+  }
+  getProfileInfo() {
+    return this.http.get<ProfileInfo>(AppComponent.apiEndpoint + 'home', {
+      withCredentials: true
+    });
+  }
+
+  logout() {
+    this.http.get(AppComponent.apiEndpoint + 'logout', {
+      withCredentials: true
+    }).subscribe();
+  }
+}

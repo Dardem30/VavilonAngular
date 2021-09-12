@@ -1,0 +1,7 @@
+
+.mat-paginator-sticky {
+  background-color: #f0f0f0;
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
+}

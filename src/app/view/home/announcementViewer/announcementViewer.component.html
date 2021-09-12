@@ -1,0 +1,140 @@
+<style>
+  mat-form-field {
+    width: 80%;
+    margin-top: 5px;
+  }
+
+  mat-icon {
+    margin-left: 10px;
+  }
+  .readonly-wrapper {
+    cursor: not-allowed;
+  }
+
+  .readonly-wrapper .readonly-block {
+    pointer-events: none;
+  }
+
+  .column {
+    float: left;
+    width: 25%;
+    padding: 10px;
+  }
+
+  /* Style the images inside the grid */
+  .column img {
+    opacity: 0.8;
+    cursor: pointer;
+  }
+
+  .column img:hover {
+    opacity: 1;
+  }
+
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  /* The expanding image container */
+  .container {
+    position: relative;
+    display: none;
+  }
+
+  /* Expanding image text */
+  #imgtext {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    color: white;
+    font-size: 20px;
+  }
+
+  /* Closable button inside the expanded image */
+  .closebtn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+  }
+</style>
+<div style="width: 100%;display: block">
+  <h2 style="padding-left: 15px;margin-right: 10px; display: inline-block">Announcement</h2>
+  <button mat-raised-button mat-dialog-close style="display: inline-block" (click)="close()">
+    Close
+  </button>
+</div>
+<mat-divider></mat-divider>
+<div style="padding: 0 30%">
+  <div
+    style="width: 100%;overflow-x: auto; overflow-y: hidden;white-space: nowrap;max-height: 650px;position: relative;display: block">
+    <mat-card *ngFor="let contact of announcement.contacts"
+              style="position:relative; display: inline-block;margin-right: 10px; margin-bottom: 5px">
+      <mat-card-title>{{contact.name}}</mat-card-title>
+      <mat-card-subtitle>{{contact.value}}</mat-card-subtitle>
+      <mat-card-actions>
+        <button mat-button>COPY</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <br>
+  <mat-form-field appearance="fill">
+    <mat-label>[Select announcement type]</mat-label>
+    <mat-select [(ngModel)]="announcement.announcementType.announcementTypeId">
+      <mat-option *ngFor="let announcementType of announcementTypes"
+                  [value]="announcementType.announcementTypeId" disabled>{{announcementType.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="fill">
+    <mat-label>[Select measure]</mat-label>
+    <mat-select [(ngModel)]="announcement.measure.measureCode">
+      <mat-option *ngFor="let measure of measures" [value]="measure.measureCode" disabled>{{measure.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="fill" style="width: 20%">
+    <mat-label>Price</mat-label>
+    <input matInput [(ngModel)]="announcement.price" type="number" readonly>
+  </mat-form-field>
+  <mat-form-field appearance="fill" style="width: 40%; margin-left: 10px" class="readonly-wrapper">
+    <mat-label>Currency sign</mat-label>
+    <mat-select [(ngModel)]="announcement.currencySign" >
+      <mat-option *ngFor="let currency of getCurrencySigns()"
+                  [value]="currency" [innerHTML]="currency" disabled></mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+<!--  <div class="gallery" *ngFor="let image of images">-->
+<!--    <a target="_blank" href="https://drive.google.com/uc?export=view&id={{image}}">-->
+<!--      <img src="https://drive.google.com/uc?export=view&id={{image}}" alt="Cinque Terre" style="max-width: 800px;max-height: 600px">-->
+<!--    </a>-->
+<!--  </div>-->
+  <!-- The four columns -->
+  <div class="row">
+    <div class="column" *ngFor="let image of images" style="height: 200px">
+      <img src="https://drive.google.com/uc?export=view&id={{image}}" style="width:100%; max-height: 200px" (click)="expandImage($event);">
+    </div>
+  </div>
+
+  <div class="container">
+    <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+    <img id="expandedImg" style="width:100%">
+    <div id="imgtext"></div>
+  </div>
+
+  <br>
+  <mat-form-field appearance="fill" style="width: 100%">
+    <mat-label>Description</mat-label>
+    <textarea matInput style="height: 200px" [(ngModel)]="announcement.text" readonly></textarea>
+  </mat-form-field>
+</div>
+<h2 style="padding-left: 15px">Territory for delivery</h2>
+<mat-divider style="margin-bottom: 10px"></mat-divider>
+
+<div id="map" style="margin-bottom: 10px"></div>
