@@ -1,5 +1,5 @@
 <div style="display: flex;flex-flow: column;height: 100%">
-  <mat-toolbar color="primary" style="color: black; background-color: #3d3c3a; flex: 0 1 90px;">
+  <mat-toolbar color="primary" style="color: black; background-color: #3d3c3a; flex: 0 0 50px;">
     <button mat-icon-button *ngIf="sidenav.mode === 'over'" style="color: white" (click)="sidenav.toggle()">
       <mat-icon *ngIf="!sidenav.opened">
         menu
@@ -11,6 +11,16 @@
     <span style="width: 40%"></span>
     <span style="color: white; font-family: Georgia, serif;font-size: 40px;">VAVILON</span>
     <span class="example-spacer"></span>
+    <mat-form-field style="width: 50px;margin-right: 20px" [appearance]="'standard'">
+      <mat-select [(value)]="selectedLanguage" style="width: 50px">
+        <mat-select-trigger>
+          <img src="{{selectedLanguage.src}}" alt="" style="width: 40px; height: 40px">
+        </mat-select-trigger>
+        <mat-option *ngFor="let lang of langs" [value]="lang">
+          <img src="{{lang.src}}" alt="" style="width: 40px; height: 40px">
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <button mat-icon-button style="margin-right: 20px" (click)="onSearchIconClick()" *ngIf="activeTab == tabs.HOME">
       <mat-icon aria-hidden="false" aria-label="Example search icon" style="color: white">search</mat-icon>
     </button>
@@ -217,6 +227,34 @@
         </div>
         <div style="flex: 1 1 auto;">
           <div #mainContent></div>
+        </div>
+      </div>
+
+      <div id="live-chat" [class.show]="true">
+        <header class="clearfix" (click)="slideToggle()">
+          <a class="chat-close">x</a>
+          <h4>Имя Фамилия</h4>
+          <span class="chat-message-counter">3</span>
+        </header>
+        <div class="chat" id="chat">
+          <div class="chat-history" #chatHistory [scrollTop]="chatHistory.scrollHeight">
+            <div class="chat-message clearfix" *ngFor="let message of messages" id="chatHistory">
+              <img src="https://source.unsplash.com/c_GmwfHBDzk/200x200"  alt="" width="32" height="32">
+              <div class="chat-message-content clearfix" style="word-wrap: break-word">
+                <span class="chat-time">{{message.date | date: 'HH:mm'}}</span>
+                <h5 [style.font-weight]="message.isYou == true ? '700' : 'normal'" [style.color]="message.isYou == true ? 'red' : 'black'">{{message.userSender}}</h5>
+                <p>{{message.text}}</p>
+              </div>
+              <hr style="margin-top: 5px">
+            </div>
+          </div>
+          <div>
+            <mat-divider></mat-divider>
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Start chatting..." name="text">
+              <mat-icon matSuffix>send</mat-icon>
+            </mat-form-field>
+          </div>
         </div>
       </div>
     </mat-sidenav-content>

@@ -23,6 +23,8 @@ import {AnnouncementComponent} from "../announcement/announcement.component";
 import {AnnouncementDetailsComponent} from "../announcement/announcementDetails/announcementDetails.component";
 import {AnnouncementViewerComponent} from "../home/announcementViewer/announcementViewer.component";
 import {MapLoaderService} from "../../services/MapLoaderService";
+import * as enLocalization from "../../localization/vavilon.en"
+import * as ruLocalization from "../../localization/vavilon.ru"
 
 declare const google: any;
 
@@ -58,6 +60,18 @@ export class MainComponent implements OnInit, AfterViewInit {
     password: null,
     email: null
   };
+  openChat = true;
+  heightChecked = false;
+  initHeight = 0;
+  messages = [];
+  langs = [{
+    locale: enLocalization,
+    src: '../../../assets/en.png'
+  }, {
+    locale: ruLocalization,
+    src: '../../../assets/ru.png'
+  }];
+  selectedLanguage = this.langs[0];
   announcements: AnnouncementOverviewItem[] = [];
   @ViewChild('accordionHeader') accordionHeader: any;
   @ViewChild('paginator') paginator: MatPaginator;
@@ -350,6 +364,22 @@ export class MainComponent implements OnInit, AfterViewInit {
       || this.registrationLoginValidator.invalid
       || this.registrationPasswordValidator.invalid
       || this.emailValidator.invalid
+  }
+
+  slideToggle() {
+    const chat = document.getElementById('chat');
+    if (!this.heightChecked) {
+      this.initHeight = chat.offsetHeight;
+      this.heightChecked = true;
+    }
+    if (this.openChat) {
+      this.openChat = false;
+      chat.style.height = '0px';
+    }
+    else {
+      this.openChat = true;
+      chat.style.height = this.initHeight + 'px';
+    }
   }
 }
 

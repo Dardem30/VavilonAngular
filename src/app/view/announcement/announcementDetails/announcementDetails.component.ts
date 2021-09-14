@@ -53,20 +53,9 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
     if (this.announcementId != null) {
       this.announcementService.read(this.announcementId).subscribe(result => {
         this.announcement = result;
-        console.log(this.announcement);
         MapLoaderService.load().then(() => {
           this.drawPolygon();
         })
-        this.contactService.getContacts().subscribe(result => {
-          this.contacts = result
-        });
-
-        this.productService.search(this.productsSearchForm).subscribe(result => {
-          this.products = result.result
-          for (let product of this.products) {
-            product.selectedForAnnouncement = this.announcement.product.productId == product.productId;
-          }
-        });
       })
     } else {
       MapLoaderService.load().then(() => {
@@ -78,6 +67,16 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
     })
     this.announcementService.getMeasures().subscribe(result => {
       this.measures = result
+    });
+
+    this.contactService.getContacts().subscribe(result => {
+      this.contacts = result
+    });
+    this.productService.search(this.productsSearchForm).subscribe(result => {
+      this.products = result.result
+      for (let product of this.products) {
+        product.selectedForAnnouncement = this.announcement.product.productId == product.productId;
+      }
     });
   }
 
@@ -165,6 +164,6 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   }
 
   close() {
-    this.mainComponentInstance.switchTab(MainTabs.HOME, null, false);
+    this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT, null, false);
   }
 }
