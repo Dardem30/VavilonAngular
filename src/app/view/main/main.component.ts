@@ -72,10 +72,10 @@ export class MainComponent implements OnInit, AfterViewInit {
   initHeight = 0;
   langs = [{
     locale: enLocalization,
-    src: '../../../assets/en.png'
+    src: 'assets/en.png'
   }, {
     locale: ruLocalization,
-    src: '../../../assets/ru.png'
+    src: 'assets/ru.png'
   }];
   selectedLanguage = this.langs[0];
   announcements: AnnouncementOverviewItem[] = [];

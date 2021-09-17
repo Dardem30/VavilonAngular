@@ -43,7 +43,7 @@ import {MessageService} from "./services/MessageService";
 import {MessagesComponent} from "./view/messages/messages.component";
 
 const routes: Routes = [
-  {path: '', component: MainComponent}
+  {path: '**', component: MainComponent}
 ];
 
 @NgModule({
