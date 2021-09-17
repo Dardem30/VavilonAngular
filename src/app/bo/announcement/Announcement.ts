@@ -3,10 +3,11 @@ import {Product} from "../product/Product";
 import {Measure} from "./Measure";
 import {Contact} from "../contact/Contact";
 import {Polygon} from "./Polygon";
+import {UserLight} from "../user/UserLight";
 
 export class Announcement {
   announcementId;
-  userId;
+  user: UserLight;
   contacts: Contact[];
   announcementType: AnnouncementType;
   product: Product;

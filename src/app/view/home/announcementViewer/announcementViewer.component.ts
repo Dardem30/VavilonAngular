@@ -126,4 +126,8 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   close() {
     this.mainComponentInstance.switchTab(MainTabs.HOME, null, false);
   }
+
+  chat() {
+    this.mainComponentInstance.startChat(this.announcement.user);
+  }
 }

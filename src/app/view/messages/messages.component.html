@@ -1,0 +1,48 @@
+<div id="container">
+  <aside>
+    <header>
+      <input type="text" placeholder="search">
+    </header>
+    <ul>
+      <li *ngFor="let conversation of conversations" (click)="getConversation(conversation)">
+        <img style="width: 55px;height: 55px" src="https://source.unsplash.com/c_GmwfHBDzk/200x200" alt="">
+        <div>
+          <h2>{{getConversationNames(conversation)}}</h2>
+          <h3>
+            <span class="status orange"></span>
+            offline
+          </h3>
+        </div>
+      </li>
+    </ul>
+  </aside>
+  <main>
+    <header>
+      <img style="width: 55px;height: 55px" src="../../../assets/nophoto.png" alt="">
+      <div>
+        <h2 *ngIf="currentConversation != null">Chat with {{getConversationNames(currentConversation)}}</h2>
+        <h3>already {{totalMessages}} messages</h3>
+      </div>
+    </header>
+    <ul id="chat">
+      <li *ngFor="let message of messages" [class]="isMe(message.user.userId) ? 'me' : 'you'">
+        <div class="entete">
+          <span class="status green" [class]="isMe(message.user.userId) ? 'status blue' : 'status green'"
+                style="margin-right: 10px"></span>
+          <h2 style="margin-right: 10px">{{message.user.firstName + ' ' + message.user.lastName + ' '}}</h2>
+          <h3>{{message.createTime | date: 'HH:mm'}}</h3>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+          {{message.text}}
+        </div>
+      </li>
+    </ul>
+    <footer>
+      <textarea placeholder="Type your message" #messageField></textarea>
+      <button mat-button style="display: block;width: 101.5%; color: #3d3c3a" (click)="sendMessage(messageField)">
+        Send
+      </button>
+    </footer>
+  </main>
+</div>

@@ -39,6 +39,8 @@ import {ContactService} from "./services/ContactService";
 import {AnnouncementComponent} from "./view/announcement/announcement.component";
 import {AnnouncementDetailsComponent} from "./view/announcement/announcementDetails/announcementDetails.component";
 import {AnnouncementViewerComponent} from "./view/home/announcementViewer/announcementViewer.component";
+import {MessageService} from "./services/MessageService";
+import {MessagesComponent} from "./view/messages/messages.component";
 
 const routes: Routes = [
   {path: '', component: MainComponent}
@@ -57,7 +59,8 @@ const routes: Routes = [
     ContactDetails,
     AnnouncementComponent,
     AnnouncementDetailsComponent,
-    AnnouncementViewerComponent
+    AnnouncementViewerComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +90,7 @@ const routes: Routes = [
     MatSelectModule,
     MatCheckboxModule
   ],
-  providers: [AnnouncementService, SecurityService, UserCardService, ProductService, ContactService],
+  providers: [AnnouncementService, SecurityService, UserCardService, ProductService, ContactService, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

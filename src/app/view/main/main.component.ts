@@ -25,6 +25,13 @@ import {AnnouncementViewerComponent} from "../home/announcementViewer/announceme
 import {MapLoaderService} from "../../services/MapLoaderService";
 import * as enLocalization from "../../localization/vavilon.en"
 import * as ruLocalization from "../../localization/vavilon.ru"
+import {Stomp} from '@stomp/stompjs';
+import * as SockJS from 'sockjs-client';
+import {MessageService} from "../../services/MessageService";
+import {Conversation} from "../../bo/chat/Conversation";
+import {Message} from "../../bo/chat/Message";
+import {UserLight} from "../../bo/user/UserLight";
+import {MessagesComponent} from "../messages/messages.component";
 
 declare const google: any;
 
@@ -63,7 +70,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   openChat = true;
   heightChecked = false;
   initHeight = 0;
-  messages = [];
   langs = [{
     locale: enLocalization,
     src: '../../../assets/en.png'
@@ -90,9 +96,22 @@ export class MainComponent implements OnInit, AfterViewInit {
   tabs = MainTabs;
   map: any;
   drawingManager: any;
+  stompClient;
+  showChat = false;
+  conversation: Conversation = null;
+  messages: Message[] = [];
+  conversationListFilter = {
+    conversationId: null,
+    start: 0,
+    limit: 50
+  };
+  totalMessages = 0;
+  usersInCurrentConversation: UserLight[] = [];
+  currentChatSubscriptionId: string;
 
   constructor(private announcementService: AnnouncementService,
               private componentFactoryResolver: ComponentFactoryResolver,
+              private messageService: MessageService,
               private securityService: SecurityService) {
   }
 
@@ -116,7 +135,10 @@ export class MainComponent implements OnInit, AfterViewInit {
       ref.changeDetectorRef.detectChanges();
       scope.currentComponent = ref;
       scope.searchAnnouncement();
-    }, 300)
+    }, 300);
+    if (AppComponent.profileInfo.loggedIn) {
+      this.initializeWebSocketConnection();
+    }
   }
   ngAfterViewInit() {
     MapLoaderService.load().then(() => {
@@ -184,6 +206,13 @@ export class MainComponent implements OnInit, AfterViewInit {
         ref.changeDetectorRef.detectChanges();
         this.currentComponent = ref;
         break
+      case MainTabs.MESSAGES:
+        factory = this.componentFactoryResolver.resolveComponentFactory(MessagesComponent);
+        ref = this.mainContent.createComponent(factory);
+        ref.instance.mainComponentInstance = this;
+        ref.changeDetectorRef.detectChanges();
+        this.currentComponent = ref;
+        break
       case MainTabs.ANNOUNCEMENT_DETAILS:
         factory = this.componentFactoryResolver.resolveComponentFactory(AnnouncementDetailsComponent);
         ref = this.mainContent.createComponent(factory);
@@ -238,6 +267,7 @@ export class MainComponent implements OnInit, AfterViewInit {
             AppComponent.profileInfo = profileInfo;
             AppComponent.profileInfo.loggedIn = true;
           });
+          this.initializeWebSocketConnection();
         } else {
           this.authSideNavErrorMessage = 'Login or password is/are incorrect'
         }
@@ -381,6 +411,82 @@ export class MainComponent implements OnInit, AfterViewInit {
       chat.style.height = this.initHeight + 'px';
     }
   }
+  initializeWebSocketConnection() {
+    let ws = new SockJS(AppComponent.apiEndpoint + 'vavilon-websocket');
+    this.stompClient = Stomp.over(ws);
+    this.stompClient.connect({
+      withCredentials: true
+    }, () => {});
+  }
+  openSocket() {
+    this.closeChat();
+    this.showChat = true;
+    this.currentChatSubscriptionId = this.stompClient.subscribe('/socket-publisher/conversation/' + this.conversation.conversationId, (messageJson) => {
+      console.log(JSON.parse(messageJson.body))
+      this.messages.push(JSON.parse(messageJson.body));
+    }, {
+      withCredentials: true
+    }).id;
+  }
+
+  startChat(user) {
+    this.showChat = true;
+    this.usersInCurrentConversation = [user];
+    this.messageService.getConversation(this.getUserIdsInCurrentConversation()).subscribe(conversation => {
+      console.log(conversation);
+      this.conversation = conversation;
+      if (conversation != null) {
+        this.openSocket();
+        this.conversationListFilter.conversationId = this.conversation.conversationId;
+        this.messageService.getMessagesOfConversation(this.conversationListFilter).subscribe(result => {
+          console.log(result);
+          this.messages = result.result;
+          this.totalMessages = result.total;
+        })
+      }
+    })
+  }
+
+  sendMessage(chatMessageField: HTMLInputElement) {
+    const message = new Message();
+    const user = new UserLight();
+    user.userId = AppComponent.profileInfo.userId;
+    message.user = user;
+    message.createTime = new Date();
+    message.text = chatMessageField.value;
+    if (this.conversation == null) {
+      this.messageService.startConversation(message, this.getUserIdsInCurrentConversation()).subscribe(conversation => {
+        this.messages.push(message);
+        this.conversation = conversation;
+        this.openSocket();
+      })
+    } else {
+      message.conversation = this.conversation;
+      this.messageService.sendMessage(message);
+    }
+  }
+  getUserIdsInCurrentConversation() : number[] {
+    return this.usersInCurrentConversation.map(user => user.userId);
+  }
+  getUsersInCurrentConversation() : string {
+    let name = '';
+    for (let user of this.usersInCurrentConversation) {
+      name += user.firstName + ' ' + user.lastName + ',';
+    }
+    return name.slice(0, -1);
+  }
+
+  isYou(userId) {
+    return AppComponent.profileInfo.userId == userId;;
+  }
+
+  closeChat() {
+    if (this.currentChatSubscriptionId != null) {
+      this.stompClient.unsubscribe(this.currentChatSubscriptionId)
+      this.showChat = false;
+      this.currentChatSubscriptionId = null;
+    }
+  }
 }
 
 export enum AuthState {
@@ -396,7 +502,8 @@ export enum MainTabs {
   CONTACT,
   ANNOUNCEMENT,
   ANNOUNCEMENT_DETAILS,
-  ANNOUNCEMENT_VIEWER
+  ANNOUNCEMENT_VIEWER,
+  MESSAGES
 }
 
 export class Validator implements ErrorStateMatcher {

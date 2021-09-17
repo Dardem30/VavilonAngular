@@ -56,6 +56,10 @@
         <mat-icon>home</mat-icon>
         <span>Main</span>
       </button>
+      <button mat-button class="menu-button" (click)="switchTab(tabs.MESSAGES, null, true)" *ngIf="getProfileInfo().loggedIn">
+        <mat-icon>mail_outline</mat-icon>
+        <span>Messages</span>
+      </button>
       <button mat-button class="menu-button" (click)="switchTab(tabs.ANNOUNCEMENT, null, true)" *ngIf="getProfileInfo().loggedIn">
         <mat-icon>gavel</mat-icon>
         <span>Announcements</span>
@@ -230,19 +234,19 @@
         </div>
       </div>
 
-      <div id="live-chat" [class.show]="true">
+      <div id="live-chat" [class.show]="showChat">
         <header class="clearfix" (click)="slideToggle()">
-          <a class="chat-close">x</a>
-          <h4>Имя Фамилия</h4>
+          <a class="chat-close" (click)="closeChat()">x</a>
+          <h4>{{getUsersInCurrentConversation()}}</h4>
           <span class="chat-message-counter">3</span>
         </header>
         <div class="chat" id="chat">
           <div class="chat-history" #chatHistory [scrollTop]="chatHistory.scrollHeight">
             <div class="chat-message clearfix" *ngFor="let message of messages" id="chatHistory">
-              <img src="https://source.unsplash.com/c_GmwfHBDzk/200x200"  alt="" width="32" height="32">
+              <img [src]="isYou(message.user.userId) ? 'https://source.unsplash.com/c_GmwfHBDzk/200x200' : 'https://material.angular.io/assets/img/examples/shiba1.jpg'"  alt="" width="32" height="32">
               <div class="chat-message-content clearfix" style="word-wrap: break-word">
-                <span class="chat-time">{{message.date | date: 'HH:mm'}}</span>
-                <h5 [style.font-weight]="message.isYou == true ? '700' : 'normal'" [style.color]="message.isYou == true ? 'red' : 'black'">{{message.userSender}}</h5>
+                <span class="chat-time">{{message.createTime | date: 'HH:mm'}}</span>
+                <h5 [style.font-weight]="isYou(message.user.userId) ? '700' : 'normal'" [style.color]="isYou(message.user.userId) ? 'red' : 'black'">{{message.user.firstName + ' ' + message.user.lastName}}</h5>
                 <p>{{message.text}}</p>
               </div>
               <hr style="margin-top: 5px">
@@ -251,8 +255,8 @@
           <div>
             <mat-divider></mat-divider>
             <mat-form-field class="full-width">
-              <input matInput placeholder="Start chatting..." name="text">
-              <mat-icon matSuffix>send</mat-icon>
+              <input matInput placeholder="Start chatting..." name="text" #chatMessageField>
+              <mat-icon matSuffix (click)="sendMessage(chatMessageField)">send</mat-icon>
             </mat-form-field>
           </div>
         </div>
