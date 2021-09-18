@@ -32,6 +32,8 @@ import {Conversation} from "../../bo/chat/Conversation";
 import {Message} from "../../bo/chat/Message";
 import {UserLight} from "../../bo/user/UserLight";
 import {MessagesComponent} from "../messages/messages.component";
+import {ApproveAnnouncementOverviewComponent} from "../approveAnnouncementOverview/approveAnnouncementOverview.component";
+import {ModerationStatus} from "../../bo/announcement/ModerationStatus";
 
 declare const google: any;
 
@@ -108,6 +110,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   totalMessages = 0;
   usersInCurrentConversation: UserLight[] = [];
   currentChatSubscriptionId: string;
+  moderationStatuses: ModerationStatus[] = [];
 
   constructor(private announcementService: AnnouncementService,
               private componentFactoryResolver: ComponentFactoryResolver,
@@ -139,6 +142,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     if (AppComponent.profileInfo.loggedIn) {
       this.initializeWebSocketConnection();
     }
+    this.announcementService.getModerationStatuses().subscribe(result => this.moderationStatuses = result);
+    this.slideToggle();
   }
   ngAfterViewInit() {
     MapLoaderService.load().then(() => {
@@ -175,6 +180,14 @@ export class MainComponent implements OnInit, AfterViewInit {
     switch (tab) {
       case MainTabs.HOME:
         factory = this.componentFactoryResolver.resolveComponentFactory(HomeComponent);
+        ref = this.mainContent.createComponent(factory);
+        ref.instance.mainComponentInstance = this;
+        ref.changeDetectorRef.detectChanges();
+        this.currentComponent = ref;
+        this.searchAnnouncement();
+        break
+      case MainTabs.APPROVE_ANNOUNCEMENT_OVERVIEW:
+        factory = this.componentFactoryResolver.resolveComponentFactory(ApproveAnnouncementOverviewComponent);
         ref = this.mainContent.createComponent(factory);
         ref.instance.mainComponentInstance = this;
         ref.changeDetectorRef.detectChanges();
@@ -433,8 +446,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.showChat = true;
     this.usersInCurrentConversation = [user];
     this.messageService.getConversation(this.getUserIdsInCurrentConversation()).subscribe(conversation => {
-      console.log(conversation);
       this.conversation = conversation;
+      console.log(conversation);
       if (conversation != null) {
         this.openSocket();
         this.conversationListFilter.conversationId = this.conversation.conversationId;
@@ -501,9 +514,15 @@ export enum MainTabs {
   PRODUCTS,
   CONTACT,
   ANNOUNCEMENT,
+  APPROVE_ANNOUNCEMENT_OVERVIEW,
   ANNOUNCEMENT_DETAILS,
   ANNOUNCEMENT_VIEWER,
   MESSAGES
+}
+export enum ModerationStatuses {
+  TO_BE_REVIEWED = 1,
+  APPROVED = 2,
+  DECLINED = 3
 }
 
 export class Validator implements ErrorStateMatcher {

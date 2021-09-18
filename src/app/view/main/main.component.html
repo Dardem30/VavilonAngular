@@ -56,6 +56,10 @@
         <mat-icon>home</mat-icon>
         <span>Main</span>
       </button>
+      <button mat-button class="menu-button" (click)="switchTab(tabs.APPROVE_ANNOUNCEMENT_OVERVIEW, null, true)" *ngIf="getProfileInfo().role === 'ADMIN'">
+        <mat-icon>rate_review</mat-icon>
+        <span>Approve Announcements</span>
+      </button>
       <button mat-button class="menu-button" (click)="switchTab(tabs.MESSAGES, null, true)" *ngIf="getProfileInfo().loggedIn">
         <mat-icon>mail_outline</mat-icon>
         <span>Messages</span>

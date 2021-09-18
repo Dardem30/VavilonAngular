@@ -4,6 +4,7 @@ import {Measure} from "./Measure";
 import {Contact} from "../contact/Contact";
 import {Polygon} from "./Polygon";
 import {UserLight} from "../user/UserLight";
+import {ModerationStatus} from "./ModerationStatus";
 
 export class Announcement {
   announcementId;
@@ -17,4 +18,5 @@ export class Announcement {
   text;
   announcementDate;
   polygons: Polygon[];
+  moderationStatus: ModerationStatus;
 }

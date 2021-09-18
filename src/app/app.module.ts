@@ -41,13 +41,11 @@ import {AnnouncementDetailsComponent} from "./view/announcement/announcementDeta
 import {AnnouncementViewerComponent} from "./view/home/announcementViewer/announcementViewer.component";
 import {MessageService} from "./services/MessageService";
 import {MessagesComponent} from "./view/messages/messages.component";
+import {ApproveAnnouncementOverviewComponent} from "./view/approveAnnouncementOverview/approveAnnouncementOverview.component";
 
 const routes: Routes = [
   {path: '*', component: MainComponent},
-  {path: '**', component: MainComponent},
-  {path: '/VavilonAngular', component: MainComponent},
-  {path: '/VavilonAngular/VavilonAngular', component: MainComponent},
-  {path: '/VavilonAngular/VavilonAngular/VavilonAngular', component: MainComponent},
+  {path: '**', component: MainComponent}
 ];
 
 @NgModule({
@@ -64,7 +62,8 @@ const routes: Routes = [
     AnnouncementComponent,
     AnnouncementDetailsComponent,
     AnnouncementViewerComponent,
-    MessagesComponent
+    MessagesComponent,
+    ApproveAnnouncementOverviewComponent
   ],
   imports: [
     BrowserModule,

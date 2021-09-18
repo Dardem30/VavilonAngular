@@ -7,6 +7,7 @@ import {HttpClient} from "@angular/common/http";
 import {AnnouncementType} from "../bo/announcement/AnnouncementType";
 import {Measure} from "../bo/announcement/Measure";
 import {Announcement} from "../bo/announcement/Announcement";
+import {ModerationStatus} from "../bo/announcement/ModerationStatus";
 
 @Injectable()
 export class AnnouncementService {
@@ -15,7 +16,9 @@ export class AnnouncementService {
 
   }
   search(listFilter: any): Observable<SearchResult<AnnouncementOverviewItem>> {
-    return this.http.post<SearchResult<AnnouncementOverviewItem>>(AppComponent.apiEndpoint + 'announcement/listAnnouncements', listFilter);
+    return this.http.post<SearchResult<AnnouncementOverviewItem>>(AppComponent.apiEndpoint + 'announcement/listAnnouncements', listFilter, {
+      withCredentials: true
+    });
   }
   searchForUser(listFilter: any): Observable<SearchResult<AnnouncementOverviewItem>> {
     return this.http.post<SearchResult<AnnouncementOverviewItem>>(AppComponent.apiEndpoint + 'announcement/listAnnouncementsForUser', listFilter, {
@@ -32,6 +35,11 @@ export class AnnouncementService {
       withCredentials: true
     });
   }
+  getModerationStatuses(): Observable<ModerationStatus[]> {
+    return this.http.get<ModerationStatus[]>(AppComponent.apiEndpoint + 'announcement/getModerationStatuses', {
+      withCredentials: true
+    });
+  }
   save(announcement: Announcement): Observable<any> {
     return this.http.post(AppComponent.apiEndpoint + 'announcement/save', announcement, {
       withCredentials: true
@@ -42,5 +50,14 @@ export class AnnouncementService {
   }
   gallery(announcementId: number) {
     return this.http.get<string[]>(AppComponent.apiEndpoint + 'announcement/gallery?announcementId=' + announcementId);
+  }
+
+  updateModerationStatus(announcementId, moderationStatusId) {
+    return this.http.post(AppComponent.apiEndpoint + 'announcement/updateModerationStatus', {
+      announcementId: announcementId,
+      moderationStatusId: moderationStatusId
+    }, {
+      withCredentials: true
+    });
   }
 }

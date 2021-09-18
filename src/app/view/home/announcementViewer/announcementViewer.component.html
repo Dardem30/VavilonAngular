@@ -7,6 +7,7 @@
   mat-icon {
     margin-left: 10px;
   }
+
   .readonly-wrapper {
     cursor: not-allowed;
   }
@@ -63,14 +64,27 @@
     cursor: pointer;
   }
 </style>
-<div style="width: 100%;display: block">
+<div style="width: 100%;display: inline-block">
   <h2 style="padding-left: 15px;margin-right: 10px; display: inline-block">Announcement</h2>
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="close()">
     Close
   </button>
-  <button mat-raised-button mat-dialog-close style="display: inline-block" (click)="chat()">
+  <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="chat()">
     Chat
   </button>
+  <div style="float: right">
+    <mat-form-field appearance="fill" *ngIf="getProfileInfo().role === 'ADMIN'"
+                    style="margin-right: 10px; display: inline-block; width: 200px">
+      <mat-label>[Select moderation status]</mat-label>
+      <mat-select [(ngModel)]="announcement.moderationStatus.moderationStatusId">
+        <mat-option *ngFor="let moderationStatus of mainComponentInstance.moderationStatuses"
+                    [value]="moderationStatus.moderationStatusId">{{moderationStatus.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button mat-dialog-close style="display: inline-block" (click)="updateModerationStatus()">
+      Update moderation status
+    </button>
+  </div>
 </div>
 <mat-divider></mat-divider>
 <div style="padding: 0 30%">
@@ -107,21 +121,22 @@
   </mat-form-field>
   <mat-form-field appearance="fill" style="width: 40%; margin-left: 10px" class="readonly-wrapper">
     <mat-label>Currency sign</mat-label>
-    <mat-select [(ngModel)]="announcement.currencySign" >
+    <mat-select [(ngModel)]="announcement.currencySign">
       <mat-option *ngFor="let currency of getCurrencySigns()"
                   [value]="currency" [innerHTML]="currency" disabled></mat-option>
     </mat-select>
   </mat-form-field>
   <br>
-<!--  <div class="gallery" *ngFor="let image of images">-->
-<!--    <a target="_blank" href="https://drive.google.com/uc?export=view&id={{image}}">-->
-<!--      <img src="https://drive.google.com/uc?export=view&id={{image}}" alt="Cinque Terre" style="max-width: 800px;max-height: 600px">-->
-<!--    </a>-->
-<!--  </div>-->
+  <!--  <div class="gallery" *ngFor="let image of images">-->
+  <!--    <a target="_blank" href="https://drive.google.com/uc?export=view&id={{image}}">-->
+  <!--      <img src="https://drive.google.com/uc?export=view&id={{image}}" alt="Cinque Terre" style="max-width: 800px;max-height: 600px">-->
+  <!--    </a>-->
+  <!--  </div>-->
   <!-- The four columns -->
   <div class="row">
     <div class="column" *ngFor="let image of images" style="height: 200px">
-      <img src="https://drive.google.com/uc?export=view&id={{image}}" style="width:100%; max-height: 200px" (click)="expandImage($event);">
+      <img src="https://drive.google.com/uc?export=view&id={{image}}" style="width:100%; max-height: 200px"
+           (click)="expandImage($event);">
     </div>
   </div>
 

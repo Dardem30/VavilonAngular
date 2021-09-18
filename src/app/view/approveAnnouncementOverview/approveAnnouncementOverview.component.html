@@ -1,0 +1,29 @@
+<mat-grid-list cols="3" rowHeight="0.93:1">
+  <mat-grid-tile *ngFor="let announcement of announcements">
+    <mat-card class="example-card">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"
+             style="background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');"></div>
+        <mat-card-title>{{announcement.userName}}</mat-card-title>
+        <mat-card-subtitle>Тип</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image src="https://drive.google.com/uc?export=view&id={{announcement.image}}"
+           style="max-height: 380px; max-width: 465px">
+      <mat-card-content>
+        <h2>{{announcement.productName}}</h2>
+        <p>
+          Описание: {{announcement.text}}
+        </p>
+        <p>
+          Цена: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
+          Объем: {{announcement.measure}}<br>
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="viewAnnouncement(announcement)">MORE</button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+<mat-paginator class="mat-paginator-sticky" [length]="this.announcements.length" aria-label="Select page" #paginator
+               (page)="pageChanged()"></mat-paginator>

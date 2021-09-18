@@ -12,6 +12,7 @@ import {AppComponent} from "../../../app.component";
 import {Polygon} from "../../../bo/announcement/Polygon";
 import {Coordinate} from "../../../bo/announcement/Coordinate";
 import {MainComponent, MainTabs} from "../../main/main.component";
+import {ModerationStatus} from "../../../bo/announcement/ModerationStatus";
 
 declare const google: any;
 
@@ -31,6 +32,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   announcementId;
   images: string[] = [];
   mainComponentInstance: MainComponent;
+  previousComponent: MainTabs;
 
   constructor(
     private contactService: ContactService,
@@ -39,6 +41,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   ) {
     this.announcement.announcementType = new AnnouncementType();
     this.announcement.measure = new Measure();
+    this.announcement.moderationStatus = new ModerationStatus();
   }
 
   ngAfterViewInit() {
@@ -124,10 +127,20 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   }
 
   close() {
-    this.mainComponentInstance.switchTab(MainTabs.HOME, null, false);
+    this.mainComponentInstance.switchTab(this.previousComponent, null, false);
   }
 
   chat() {
     this.mainComponentInstance.startChat(this.announcement.user);
+  }
+
+  getProfileInfo() {
+    return AppComponent.profileInfo;
+  }
+
+  updateModerationStatus() {
+    this.announcementService.updateModerationStatus(this.announcement.announcementId, this.announcement.moderationStatus.moderationStatusId).subscribe(result => {
+      this.close();
+    });
   }
 }

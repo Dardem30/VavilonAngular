@@ -6,10 +6,10 @@ import {MainComponent, MainTabs, ModerationStatuses} from "../main/main.componen
 
 @Component({
   selector: 'app-main',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  templateUrl: './approveAnnouncementOverview.component.html',
+  styleUrls: ['./approveAnnouncementOverview.component.css']
 })
-export class HomeComponent {
+export class ApproveAnnouncementOverviewComponent {
   showFiller = false;
   announcements: AnnouncementOverviewItem[] = [];
   mainComponentInstance: MainComponent;
@@ -22,7 +22,7 @@ export class HomeComponent {
 
 
   searchAnnouncement(announcementSearchForm: any) {
-    announcementSearchForm.moderationStatusId = ModerationStatuses.APPROVED
+    announcementSearchForm.moderationStatusId = ModerationStatuses.TO_BE_REVIEWED
     this.announcementSearchForm = announcementSearchForm;
     this.isLoading = true;
     this.announcementService.search(this.announcementSearchForm).subscribe(result => {
@@ -39,7 +39,7 @@ export class HomeComponent {
   viewAnnouncement(announcement: AnnouncementOverviewItem) {
     this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT_VIEWER, {
       announcementId: announcement.announcementId,
-      previousComponent: MainTabs.HOME
+      previousComponent: MainTabs.APPROVE_ANNOUNCEMENT_OVERVIEW
     }, false);
   }
 }
