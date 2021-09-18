@@ -238,7 +238,7 @@
         </div>
       </div>
 
-      <div id="live-chat" [class.show]="showChat">
+      <div id="live-chat" [class.show]="showChat" [style]="!showChat ? 'display: none' : ''">
         <header class="clearfix" (click)="slideToggle()">
           <a class="chat-close" (click)="closeChat()">x</a>
           <h4>{{getUsersInCurrentConversation()}}</h4>
