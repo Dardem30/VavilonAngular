@@ -5,14 +5,14 @@
         <div mat-card-avatar class="example-header-image"
              style="background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');"></div>
         <mat-card-title>{{announcement.userName}}</mat-card-title>
-        <mat-card-subtitle>Тип</mat-card-subtitle>
+        <mat-card-subtitle><ngx-material-rating [(ngModel)]="announcement.rating" [max]="5" [dense]="true" *ngIf="announcement.rating != null" [matTooltip]="announcement.rating"></ngx-material-rating></mat-card-subtitle>
       </mat-card-header>
       <img mat-card-image src="https://drive.google.com/uc?export=view&id={{announcement.image}}"
            style="max-height: 380px; max-width: 465px">
       <mat-card-content>
         <h2>{{announcement.productName}}</h2>
         <p>
-          Описание: {{announcement.text}}
+          {{locale().label.description}}: {{announcement.text}}
         </p>
         <p>
           Цена: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
@@ -28,5 +28,5 @@
 <!--<div class="lds-facebook">-->
 <!--  <div></div><div></div><div></div>-->
 <!--</div>-->
-<mat-paginator class="mat-paginator-sticky" [length]="this.announcements.length" aria-label="Select page" #paginator
+<mat-paginator class="mat-paginator-sticky" [length]="this.announcementSearchForm.total" aria-label="Select page" #paginator
                (page)="pageChanged()"></mat-paginator>

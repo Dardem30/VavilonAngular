@@ -1,7 +1,14 @@
 import {Component} from '@angular/core';
 import {ProfileInfo} from "./bo/ProfileInfo";
 import {SecurityService} from "./services/SecurityService";
+import * as enLocalization from 'src/app/localization/vavilon.en';
+import * as ruLocalization from 'src/app/localization/vavilon.ru';
+import {HttpClient} from "@angular/common/http";
 
+export enum Locale {
+  EN,
+  RU
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,8 +16,8 @@ import {SecurityService} from "./services/SecurityService";
 })
 export class AppComponent {
   title = 'VavilonAngular';
-  public static apiEndpoint = 'https://vavilon-dev.herokuapp.com/';
-  //public static apiEndpoint = 'http://localhost:8081/';
+  //public static apiEndpoint = 'https://vavilon-dev.herokuapp.com/';
+  public static apiEndpoint = 'http://localhost:8081/';
   public static profileInfo: ProfileInfo = {
     active: false,
     email: "",
@@ -19,11 +26,17 @@ export class AppComponent {
     userId: -1,
     firstName: 'Имя',
     lastName: 'Фамилия',
-    loggedIn: false
+    loggedIn: false,
+    photo: 'assets/nophoto.png'
   };
   public static currencySigns: string[] = ["&dollar;", "&euro;", "&#8381;"];
+  public static locale = enLocalization;
+  public static selectedLocale = Locale.EN;
+  public static updateLocaleFn = function (locale) {};
+  public static onReceivingProfileInfo = function () {};
 
-  constructor(securityService: SecurityService) {
+  constructor(private http: HttpClient,
+              securityService: SecurityService) {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const userId = urlSearchParams.get('userId');
     const activateUser = urlSearchParams.get('activateUser');
@@ -34,11 +47,24 @@ export class AppComponent {
       localStorage.setItem('activateUser', activateUser);
     }
     securityService.getProfileInfo().subscribe(profileInfo => {
+      profileInfo.photo = 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
       AppComponent.profileInfo = profileInfo;
       AppComponent.profileInfo.loggedIn = true;
+      AppComponent.onReceivingProfileInfo();
     }, error => {
       console.log('Unautherized')
     });
+    this.http.get('http://ip-api.com/json').subscribe((result: {country:string}) => {
+      const country = result.country;
+      if (country == 'Belarus' || country == 'Russia' || country == 'Ukraine') {
+        AppComponent.locale = ruLocalization;
+        AppComponent.selectedLocale = Locale.RU;
+      } else {
+        AppComponent.locale = enLocalization;
+        AppComponent.selectedLocale = Locale.EN;
+      }
+      AppComponent.updateLocaleFn(AppComponent.selectedLocale);
+    })
   }
   static logout() {
     AppComponent.profileInfo = {
@@ -49,7 +75,20 @@ export class AppComponent {
       userId: -1,
       firstName: 'Имя',
       lastName: 'Фамилия',
-      loggedIn: false
+      loggedIn: false,
+      photo: 'assets/nophoto.png'
+    }
+  }
+  static switchLocale(locale: Locale) {
+    switch (locale) {
+      case Locale.EN:
+        AppComponent.locale = enLocalization;
+        AppComponent.selectedLocale = Locale.EN;
+        break;
+      case Locale.RU:
+        AppComponent.locale = ruLocalization;
+        AppComponent.selectedLocale = Locale.RU;
+        break
     }
   }
 }

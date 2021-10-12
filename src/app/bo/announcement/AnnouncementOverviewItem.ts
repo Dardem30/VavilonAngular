@@ -11,4 +11,5 @@ export class AnnouncementOverviewItem {
   measure: string;
   userName: string;
   moderationStatusName: string;
+  rating;
 }

@@ -3,7 +3,7 @@ export class MapLoaderService {
   public static load(): Promise<any> {
     let browserKey = "AIzaSyA8dRCJ7-XBYEk3kKhOgPpuYmgVOSodc2w";
     let map = {
-      URL: 'https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=' + browserKey + '&callback=__onGoogleLoaded',
+      URL: 'https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing,places&key=' + browserKey + '&callback=__onGoogleLoaded',
     }
 
     // First time 'load' is called?

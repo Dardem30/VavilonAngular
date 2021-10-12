@@ -18,6 +18,7 @@ export class AnnouncementComponent implements OnInit {
     userId: AppComponent.profileInfo.userId,
     start: 0,
     limit: 50,
+    total: 100,
     sort: {
       property: "announcementId",
       direction: "DESC"
@@ -34,6 +35,7 @@ export class AnnouncementComponent implements OnInit {
   searchAnnouncements() {
     this.announcementService.searchForUser(this.announcementSearchForm).subscribe(result => {
       this.announcements = result.result
+      this.announcementSearchForm.total = result.total;
     });
   }
 

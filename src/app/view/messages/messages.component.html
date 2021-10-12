@@ -1,7 +1,7 @@
 <div id="container">
   <aside>
     <header>
-      <input type="text" placeholder="search">
+      <input type="text" placeholder="search" (keyup)="searchConversations()" [(ngModel)]="searchConversationText">
     </header>
     <ul>
       <li *ngFor="let conversation of conversations" (click)="getConversation(conversation)">
@@ -24,7 +24,7 @@
         <h3>already {{totalMessages}} messages</h3>
       </div>
     </header>
-    <ul id="chat">
+    <ul id="chat" #chat>
       <li *ngFor="let message of messages" [class]="isMe(message.user.userId) ? 'me' : 'you'">
         <div class="entete">
           <span class="status green" [class]="isMe(message.user.userId) ? 'status blue' : 'status green'"
@@ -39,7 +39,7 @@
       </li>
     </ul>
     <footer>
-      <textarea placeholder="Type your message" #messageField></textarea>
+      <textarea placeholder="Type your message" #messageField (keydown.enter)="sendMessage(messageField)"></textarea>
       <button mat-button style="display: block;width: 101.5%; color: #3d3c3a" (click)="sendMessage(messageField)">
         Send
       </button>

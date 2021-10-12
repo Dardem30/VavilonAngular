@@ -12,7 +12,7 @@ import {AnnouncementOverviewItem} from "../../bo/announcement/AnnouncementOvervi
 import {MatPaginator} from "@angular/material/paginator";
 import {SecurityService} from "../../services/SecurityService";
 import {MatSidenav} from "@angular/material/sidenav";
-import {AppComponent} from "../../app.component";
+import {AppComponent, Locale} from "../../app.component";
 import {ErrorStateMatcher} from "@angular/material/core";
 import {FormControl, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {HomeComponent} from "../home/home.component";
@@ -23,8 +23,6 @@ import {AnnouncementComponent} from "../announcement/announcement.component";
 import {AnnouncementDetailsComponent} from "../announcement/announcementDetails/announcementDetails.component";
 import {AnnouncementViewerComponent} from "../home/announcementViewer/announcementViewer.component";
 import {MapLoaderService} from "../../services/MapLoaderService";
-import * as enLocalization from "../../localization/vavilon.en"
-import * as ruLocalization from "../../localization/vavilon.ru"
 import {Stomp} from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import {MessageService} from "../../services/MessageService";
@@ -34,6 +32,8 @@ import {UserLight} from "../../bo/user/UserLight";
 import {MessagesComponent} from "../messages/messages.component";
 import {ApproveAnnouncementOverviewComponent} from "../approveAnnouncementOverview/approveAnnouncementOverview.component";
 import {ModerationStatus} from "../../bo/announcement/ModerationStatus";
+import {ProfileComponent} from "../profile/profile.component";
+import {SwitchTabParams} from "../../bo/beans/SwitchTabParams";
 
 declare const google: any;
 
@@ -48,12 +48,15 @@ export class MainComponent implements OnInit, AfterViewInit {
   announcementSearchForm: any = {
     start: 0,
     limit: 50,
+    total: 100,
     coordinates: [],
     sort: {
-      property: "price",
+      property: "rating",
       direction: "DESC"
     }
   };
+  sortOptions: string[] = ['rating', 'price', 'productName']
+  directionOptions: string[] = ['ASC', 'DESC']
   authForm: any = {
     login: null,
     password: null
@@ -73,10 +76,10 @@ export class MainComponent implements OnInit, AfterViewInit {
   heightChecked = false;
   initHeight = 0;
   langs = [{
-    locale: enLocalization,
+    locale: Locale.EN,
     src: 'assets/en.png'
   }, {
-    locale: ruLocalization,
+    locale: Locale.RU,
     src: 'assets/ru.png'
   }];
   selectedLanguage = this.langs[0];
@@ -84,6 +87,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('accordionHeader') accordionHeader: any;
   @ViewChild('paginator') paginator: MatPaginator;
   @ViewChild('loginForm') loginForm: ElementRef;
+  @ViewChild('chatHistory') chatHistory: ElementRef;
   @ViewChild('registrationForm') registrationForm: ElementRef;
   @ViewChild('verificationForm') verificationForm: ElementRef;
   @ViewChild('authSideNav') authSideNav: MatSidenav;
@@ -105,7 +109,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   conversationListFilter = {
     conversationId: null,
     start: 0,
-    limit: 50
+    limit: 50,
+    total: 100
   };
   totalMessages = 0;
   usersInCurrentConversation: UserLight[] = [];
@@ -119,6 +124,18 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    const scope = this;
+    AppComponent.updateLocaleFn = function (selectedLocale) {
+      for (let lang of scope.langs) {
+        if (lang.locale == selectedLocale) {
+          scope.selectedLanguage = lang;
+          break;
+        }
+      }
+    }
+    AppComponent.onReceivingProfileInfo = function () {
+      scope.initializeWebSocketConnection();
+    };
     const activateUser = localStorage.getItem('activateUser');
     if (activateUser != null && activateUser == 'true') {
       localStorage.setItem('activateUser', 'false');
@@ -130,7 +147,6 @@ export class MainComponent implements OnInit, AfterViewInit {
     } else {
       this.authState = this.authStates.Login
     }
-    const scope = this;
     setTimeout(function () {
       let factory = scope.componentFactoryResolver.resolveComponentFactory(HomeComponent);
       let ref = scope.mainContent.createComponent(factory);
@@ -139,9 +155,6 @@ export class MainComponent implements OnInit, AfterViewInit {
       scope.currentComponent = ref;
       scope.searchAnnouncement();
     }, 300);
-    if (AppComponent.profileInfo.loggedIn) {
-      this.initializeWebSocketConnection();
-    }
     this.announcementService.getModerationStatuses().subscribe(result => this.moderationStatuses = result);
     this.slideToggle();
   }
@@ -168,11 +181,73 @@ export class MainComponent implements OnInit, AfterViewInit {
 
     this.drawingManager.setMap(this.map);
     google.maps.event.addListener(this.drawingManager, 'overlaycomplete', (event) => {
-      console.log({lat: event.overlay.position.lat(), lng: event.overlay.position.lng()})
       this.announcementSearchForm.coordinates.push({lat: event.overlay.position.lat(), lng: event.overlay.position.lng()})
     });
+
+
+    const input = document.getElementById("pac-input");
+    const searchBox = new google.maps.places.SearchBox(input);
+    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    const scope = this;
+    this.map.addListener("bounds_changed", () => {
+      searchBox.setBounds(scope.map.getBounds());
+    });
+    let markers = [];
+    searchBox.addListener("places_changed", () => {
+      const map = scope.map;
+      const places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach((marker) => {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // For each place, get the icon, name and location.
+      const bounds = new google.maps.LatLngBounds();
+
+      places.forEach((place) => {
+        if (!place.geometry || !place.geometry.location) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+
+        const icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25),
+        };
+
+        // Create a marker for each place.
+        markers.push(
+          new google.maps.Marker({
+            map,
+            icon,
+            title: place.name,
+            position: place.geometry.location,
+          })
+        );
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
   }
-  switchTab(tab: MainTabs, params: any, toggle: boolean): void {
+  switchTab(tab: MainTabs, params: SwitchTabParams, toggle: boolean): void {
+    if (this.panelOpenState) {
+      this.accordionHeader.close();
+      this.panelOpenState = false
+    }
     this.mainContent.remove(0);
     this.activeTab = tab;
     let factory;
@@ -226,6 +301,18 @@ export class MainComponent implements OnInit, AfterViewInit {
         ref.changeDetectorRef.detectChanges();
         this.currentComponent = ref;
         break
+      case MainTabs.PROFILE:
+        factory = this.componentFactoryResolver.resolveComponentFactory(ProfileComponent);
+        ref = this.mainContent.createComponent(factory);
+        ref.instance.mainComponentInstance = this;
+        if (params != null) {
+          for (let name in params) {
+            ref.instance[name] = params[name];
+          }
+        }
+        ref.changeDetectorRef.detectChanges();
+        this.currentComponent = ref;
+        break
       case MainTabs.ANNOUNCEMENT_DETAILS:
         factory = this.componentFactoryResolver.resolveComponentFactory(AnnouncementDetailsComponent);
         ref = this.mainContent.createComponent(factory);
@@ -272,11 +359,11 @@ export class MainComponent implements OnInit, AfterViewInit {
   login() {
     if (!this.isLoginFormInvalid()) {
       this.securityService.login(this.authForm).subscribe(result => {
-        console.log(result);
         if (result.success) {
           this.authSideNavErrorMessage = '';
           this.authSideNav.toggle();
           this.securityService.getProfileInfo().subscribe(profileInfo => {
+            profileInfo.photo = 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
             AppComponent.profileInfo = profileInfo;
             AppComponent.profileInfo.loggedIn = true;
           });
@@ -291,7 +378,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   registration() {
     if (!this.isRegistrationFormInvalid()) {
       this.securityService.registration(this.registrationModel).subscribe(result => {
-        console.log(result);
         if (result.success) {
           this.authSideNavErrorMessage = '';
           localStorage.setItem('userId', result.userId);
@@ -309,7 +395,6 @@ export class MainComponent implements OnInit, AfterViewInit {
       // @ts-ignore
       this.verificationModel.userId = parseInt(localStorage.getItem('userId'))
       this.securityService.activateUser(this.verificationModel).subscribe(result => {
-        console.log(result);
         if (result.success) {
           this.authSideNavErrorMessage = '';
           this.switchAuthForm(this.authStates.Login)
@@ -401,7 +486,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   authSideNavErrorMessage: string;
 
   isRegistrationFormInvalid() {
-    console.log(this.registrationPasswordValidator.invalid)
     return this.firstNameValidator.invalid
       || this.lastNameValidator.invalid
       || this.registrationLoginValidator.invalid
@@ -410,7 +494,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   slideToggle() {
-    const chat = document.getElementById('chat');
+    const chat = document.getElementById('main-chat');
     if (!this.heightChecked) {
       this.initHeight = chat.offsetHeight;
       this.heightChecked = true;
@@ -435,8 +519,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.closeChat();
     this.showChat = true;
     this.currentChatSubscriptionId = this.stompClient.subscribe('/socket-publisher/conversation/' + this.conversation.conversationId, (messageJson) => {
-      console.log(JSON.parse(messageJson.body))
       this.messages.push(JSON.parse(messageJson.body));
+      this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
     }, {
       withCredentials: true
     }).id;
@@ -452,8 +536,8 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.openSocket();
         this.conversationListFilter.conversationId = this.conversation.conversationId;
         this.messageService.getMessagesOfConversation(this.conversationListFilter).subscribe(result => {
-          console.log(result);
           this.messages = result.result;
+          this.conversationListFilter.total = result.total;
           this.totalMessages = result.total;
         })
       }
@@ -477,6 +561,7 @@ export class MainComponent implements OnInit, AfterViewInit {
       message.conversation = this.conversation;
       this.messageService.sendMessage(message);
     }
+    chatMessageField.value = '';
   }
   getUserIdsInCurrentConversation() : number[] {
     return this.usersInCurrentConversation.map(user => user.userId);
@@ -500,6 +585,23 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.currentChatSubscriptionId = null;
     }
   }
+
+  getCurrencySigns() {
+    return AppComponent.currencySigns;
+  }
+  formatLabel(value: number) {
+    if (value >= 1000) {
+      return value / 1000.0 + 'k';
+    }
+
+    return value;
+  }
+  changeLocale() {
+    AppComponent.switchLocale(this.selectedLanguage.locale);
+  }
+  locale() {
+    return AppComponent.locale;
+  }
 }
 
 export enum AuthState {
@@ -517,7 +619,8 @@ export enum MainTabs {
   APPROVE_ANNOUNCEMENT_OVERVIEW,
   ANNOUNCEMENT_DETAILS,
   ANNOUNCEMENT_VIEWER,
-  MESSAGES
+  MESSAGES,
+  PROFILE
 }
 export enum ModerationStatuses {
   TO_BE_REVIEWED = 1,

@@ -13,6 +13,10 @@ import {Polygon} from "../../../bo/announcement/Polygon";
 import {Coordinate} from "../../../bo/announcement/Coordinate";
 import {Product} from "../../../bo/product/Product";
 import {MainComponent, MainTabs} from "../../main/main.component";
+import {ContactDetails} from "../../contact/contact.component";
+import {MatDialog} from "@angular/material/dialog";
+import {ProductDetails} from "../../product/product.component";
+import {DomSanitizer} from "@angular/platform-browser";
 
 declare const google: any;
 
@@ -34,6 +38,7 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   productsSearchForm: any = {
     start: 0,
     limit: 50,
+    total: 100,
     sort: {
       property: "productId",
       direction: "DESC"
@@ -43,7 +48,9 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   constructor(
     private contactService: ContactService,
     private announcementService: AnnouncementService,
-    private productService: ProductService
+    private productService: ProductService,
+    private dialog: MatDialog,
+    private sanitizer: DomSanitizer
   ) {
     this.announcement.announcementType = new AnnouncementType();
     this.announcement.measure = new Measure();
@@ -55,28 +62,43 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
         this.announcement = result;
         MapLoaderService.load().then(() => {
           this.drawPolygon();
-        })
+        });
+        this.contactService.getContacts().subscribe(result => {
+          console.log(result);
+          for (let contact of result) {
+            for (let index = 0; index < this.announcement.contacts.length; index++) {
+              if (this.announcement.contacts[index].contactId == contact.contactId) {
+                this.announcement.contacts[index] = contact;
+              }
+            }
+          }
+          this.contacts = result
+        });
+        this.productService.search(this.productsSearchForm).subscribe(result => {
+          this.products = result.result
+          this.productsSearchForm.total = result.total;
+          for (let product of this.products) {
+            product.selectedForAnnouncement = this.announcement.product.productId == product.productId;
+          }
+        });
       })
     } else {
       MapLoaderService.load().then(() => {
         this.drawPolygon();
-      })
+      });
+      this.contactService.getContacts().subscribe(result => {
+        this.contacts = result
+      });
+      this.productService.search(this.productsSearchForm).subscribe(result => {
+        this.products = result.result
+        this.productsSearchForm.total = result.total;
+      });
     }
     this.announcementService.getAnnouncementTypes().subscribe(result => {
       this.announcementTypes = result
     })
     this.announcementService.getMeasures().subscribe(result => {
       this.measures = result
-    });
-
-    this.contactService.getContacts().subscribe(result => {
-      this.contacts = result
-    });
-    this.productService.search(this.productsSearchForm).subscribe(result => {
-      this.products = result.result
-      for (let product of this.products) {
-        product.selectedForAnnouncement = this.announcement.product.productId == product.productId;
-      }
     });
   }
 
@@ -165,5 +187,39 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
 
   close() {
     this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT, null, false);
+  }
+
+  openContactDetails() {
+    const scope = this;
+    this.dialog.open(ContactDetails, {
+      data: {
+        contact: null,
+        contactService: this.contactService,
+        onCloseHandler: function () {
+          scope.contactService.getContacts().subscribe(result => {
+            scope.contacts = result
+          })
+        }
+      }
+    });
+  }
+  openProductDetails(productId: any) {
+    const scope = this;
+    this.dialog.open(ProductDetails, {
+      data: {
+        productId: productId,
+        sanitizer: this.sanitizer,
+        productService: this.productService,
+        onCloseHandler: function () {
+          scope.productService.search(scope.productsSearchForm).subscribe(result => {
+            scope.products = result.result
+            scope.productsSearchForm.total = result.total;
+            for (let product of scope.products) {
+              product.selectedForAnnouncement = scope.announcement.product.productId == product.productId;
+            }
+          });
+        }
+      }
+    });
   }
 }

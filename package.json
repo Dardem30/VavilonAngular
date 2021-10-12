@@ -21,6 +21,8 @@
     "@angular/platform-browser-dynamic": "~12.1.0",
     "@angular/router": "~12.1.0",
     "@stomp/stompjs": "^6.1.2",
+    "ngx-material-rating": "^2.0.0",
+    "ngx-range": "^1.1.0",
     "rxjs": "~6.6.0",
     "sockjs": "^0.3.21",
     "stompjs": "^2.3.3",

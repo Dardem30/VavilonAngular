@@ -42,6 +42,9 @@ import {AnnouncementViewerComponent} from "./view/home/announcementViewer/announ
 import {MessageService} from "./services/MessageService";
 import {MessagesComponent} from "./view/messages/messages.component";
 import {ApproveAnnouncementOverviewComponent} from "./view/approveAnnouncementOverview/approveAnnouncementOverview.component";
+import {NgxMaterialRatingModule} from "ngx-material-rating";
+import {ProfileComponent} from "./view/profile/profile.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 const routes: Routes = [
   {path: '*', component: MainComponent},
@@ -63,7 +66,8 @@ const routes: Routes = [
     AnnouncementDetailsComponent,
     AnnouncementViewerComponent,
     MessagesComponent,
-    ApproveAnnouncementOverviewComponent
+    ApproveAnnouncementOverviewComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -91,7 +95,9 @@ const routes: Routes = [
     MatPaginatorModule,
     MatRadioModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgxMaterialRatingModule,
+    MatTooltipModule
   ],
   providers: [AnnouncementService, SecurityService, UserCardService, ProductService, ContactService, MessageService],
   bootstrap: [AppComponent]

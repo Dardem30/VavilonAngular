@@ -3,6 +3,7 @@ import {AnnouncementService} from "../../services/AnnouncementService";
 import {AnnouncementOverviewItem} from "../../bo/announcement/AnnouncementOverviewItem";
 import {MatPaginator} from "@angular/material/paginator";
 import {MainComponent, MainTabs, ModerationStatuses} from "../main/main.component";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-main',
@@ -14,7 +15,10 @@ export class HomeComponent {
   announcements: AnnouncementOverviewItem[] = [];
   mainComponentInstance: MainComponent;
   @ViewChild('paginator') paginator: MatPaginator;
-  announcementSearchForm: any;
+  announcementSearchForm: any = {
+    limit: 50,
+    total: 100
+  };
   isLoading:boolean = true;
 
   constructor(private announcementService: AnnouncementService) {
@@ -26,7 +30,8 @@ export class HomeComponent {
     this.announcementSearchForm = announcementSearchForm;
     this.isLoading = true;
     this.announcementService.search(this.announcementSearchForm).subscribe(result => {
-      this.announcements = result.result
+      this.announcements = result.result;
+      this.announcementSearchForm.total = result.total;
       this.isLoading = false;
     });
   }
@@ -39,7 +44,13 @@ export class HomeComponent {
   viewAnnouncement(announcement: AnnouncementOverviewItem) {
     this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT_VIEWER, {
       announcementId: announcement.announcementId,
-      previousComponent: MainTabs.HOME
+      previousComponent: {
+        component: MainTabs.HOME,
+        params: null
+      }
     }, false);
+  }
+  locale() {
+    return AppComponent.locale;
   }
 }

@@ -12,7 +12,7 @@
     <span style="color: white; font-family: Georgia, serif;font-size: 40px;">VAVILON</span>
     <span class="example-spacer"></span>
     <mat-form-field style="width: 50px;margin-right: 20px" [appearance]="'standard'">
-      <mat-select [(value)]="selectedLanguage" style="width: 50px">
+      <mat-select [(ngModel)]="selectedLanguage" style="width: 50px" (selectionChange)="changeLocale()">
         <mat-select-trigger>
           <img src="{{selectedLanguage.src}}" alt="" style="width: 40px; height: 40px">
         </mat-select-trigger>
@@ -45,7 +45,7 @@
   <mat-sidenav-container style="flex: 1 1 auto;">
     <mat-sidenav #sidenav="matSidenav">
 
-      <img class="avatar mat-elevation-z8" src="https://source.unsplash.com/c_GmwfHBDzk/200x200"/>
+      <img class="avatar mat-elevation-z8" [src]="getProfileInfo().photo"/>
 
       <h4 class="name">{{getProfileInfo().firstName}} {{getProfileInfo().lastName}}</h4>
       <p class="designation">ИП</p>
@@ -55,6 +55,10 @@
       <button mat-button class="menu-button" (click)="switchTab(tabs.HOME, null, true)">
         <mat-icon>home</mat-icon>
         <span>Main</span>
+      </button>
+      <button mat-button class="menu-button" (click)="switchTab(tabs.PROFILE, {userId: getProfileInfo().userId}, true)" *ngIf="getProfileInfo().loggedIn">
+        <mat-icon>account_circle</mat-icon>
+        <span>My profile</span>
       </button>
       <button mat-button class="menu-button" (click)="switchTab(tabs.APPROVE_ANNOUNCEMENT_OVERVIEW, null, true)" *ngIf="getProfileInfo().role === 'ADMIN'">
         <mat-icon>rate_review</mat-icon>
@@ -223,6 +227,42 @@
                 <input matInput [(ngModel)]="announcementSearchForm.content">
               </mat-form-field>
               <br>
+              <mat-form-field appearance="fill" style="width: 110px;margin-right: 20px">
+                <mat-label>Price start</mat-label>
+                <input matInput type="number" [(ngModel)]="announcementSearchForm.priceRangeStart">
+              </mat-form-field>
+              <mat-form-field appearance="fill" style="width: 110px;margin-right: 20px">
+                <mat-label>Price end</mat-label>
+                <input matInput type="number" [(ngModel)]="announcementSearchForm.priceRangeEnd">
+              </mat-form-field>
+              <mat-form-field appearance="fill" class="readonly-wrapper" style="width: 125px;">
+                <mat-label>Currency sign</mat-label>
+                <mat-select [(ngModel)]="announcementSearchForm.currencySign">
+                  <mat-option *ngFor="let currency of getCurrencySigns()"
+                              [value]="currency" [innerHTML]="currency"></mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="fill" class="readonly-wrapper">
+                <mat-label>Sort by</mat-label>
+                <mat-select [(ngModel)]="announcementSearchForm.sort.property">
+                  <mat-option *ngFor="let sort of sortOptions"
+                              [value]="sort">{{sort}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="fill" class="readonly-wrapper">
+                <mat-label>Sort by</mat-label>
+                <mat-select [(ngModel)]="announcementSearchForm.sort.direction">
+                  <mat-option *ngFor="let direction of directionOptions"
+                              [value]="direction">{{direction}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <br>
+              <input
+                id="pac-input"
+                class="controls"
+                type="text"
+                placeholder="Search Box"
+              />
               <div id="main-map" style="width: 100%; height: 300px"></div>
               <mat-divider></mat-divider>
               <button mat-button style="display: block;width: 100%; color: #3d3c3a" (click)="searchAnnouncement()">
@@ -244,7 +284,7 @@
           <h4>{{getUsersInCurrentConversation()}}</h4>
           <span class="chat-message-counter">3</span>
         </header>
-        <div class="chat" id="chat">
+        <div class="chat" id="main-chat">
           <div class="chat-history" #chatHistory [scrollTop]="chatHistory.scrollHeight">
             <div class="chat-message clearfix" *ngFor="let message of messages" id="chatHistory">
               <img [src]="isYou(message.user.userId) ? 'https://source.unsplash.com/c_GmwfHBDzk/200x200' : 'https://material.angular.io/assets/img/examples/shiba1.jpg'"  alt="" width="32" height="32">
@@ -259,7 +299,7 @@
           <div>
             <mat-divider></mat-divider>
             <mat-form-field class="full-width">
-              <input matInput placeholder="Start chatting..." name="text" #chatMessageField>
+              <input matInput placeholder="Start chatting..." name="text" #chatMessageField (keydown.enter)="sendMessage(chatMessageField)">
               <mat-icon matSuffix (click)="sendMessage(chatMessageField)">send</mat-icon>
             </mat-form-field>
           </div>

@@ -4,4 +4,5 @@ ng serve --ssl --ssl-key C:\Users\AMD\IdeaProjects\VavilonFront\VavilonAngular\l
 ng build --prod --base-href="https://dardem30.github.io/VavilonAngular/"
 ng build --prod
 $2a$10$nv3RcT.uuRvXsAMCeAsJYuvSLQQemBeyLfcmqutvkfGHfy1Ib86vy
-ngh --dir=dist/VavilonAngular
+ngh --dir=dist/VavilonAngularhttps://drive.google.com/uc?export=view&id=1dUXMmdXsNlHiXXe3mpE3UrmPUMggb9Mo
+<img _ngcontent-ffc-c144="" mat-card-image="" class="mat-card-image" style="max-height: 380px; max-width: 465px;" src="https://drive.google.com/uc?export=view&amp;id=1EderdFPc0HpJHLHs3MY312eyWenVl77o">

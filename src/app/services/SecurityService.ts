@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {AppComponent} from "../app.component";
 import {HttpClient} from "@angular/common/http";
 import {ProfileInfo} from "../bo/ProfileInfo";
+import {UserProfileInfo} from "../bo/user/UserProfileInfo";
 
 @Injectable()
 export class SecurityService {
@@ -10,6 +11,7 @@ export class SecurityService {
   constructor(private http: HttpClient) {
 
   }
+
   login(loginForm: any): Observable<any> {
     return this.http.post<any>(AppComponent.apiEndpoint + 'login', loginForm, {
       withCredentials: true
@@ -23,8 +25,19 @@ export class SecurityService {
   activateUser(verificationModel: any) {
     return this.http.post<any>(AppComponent.apiEndpoint + 'activateUser', verificationModel);
   }
+
   getProfileInfo() {
     return this.http.get<ProfileInfo>(AppComponent.apiEndpoint + 'home', {
+      withCredentials: true
+    });
+  }
+
+  getUserProfileInfo(userId) {
+    return this.http.get<UserProfileInfo>(AppComponent.apiEndpoint + 'readProfile?userId=' + userId);
+  }
+
+  saveUserProfileInfo(userId, info) {
+    return this.http.post(AppComponent.apiEndpoint + 'updateProfileInfo?userId=' + userId, info,{
       withCredentials: true
     });
   }
@@ -33,5 +46,13 @@ export class SecurityService {
     this.http.get(AppComponent.apiEndpoint + 'logout', {
       withCredentials: true
     }).subscribe();
+  }
+
+  uploadProfileImage(file) {
+    const formDataForUploadingFiles = new FormData();
+    formDataForUploadingFiles.append('inputFile', file);
+    return this.http.post<any>(AppComponent.apiEndpoint + 'uploadPhoto', formDataForUploadingFiles, {
+      withCredentials: true
+    });
   }
 }

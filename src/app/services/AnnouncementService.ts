@@ -8,6 +8,7 @@ import {AnnouncementType} from "../bo/announcement/AnnouncementType";
 import {Measure} from "../bo/announcement/Measure";
 import {Announcement} from "../bo/announcement/Announcement";
 import {ModerationStatus} from "../bo/announcement/ModerationStatus";
+import {CommentOverviewItem} from "../bo/announcement/CommentOverviewItem";
 
 @Injectable()
 export class AnnouncementService {
@@ -56,6 +57,24 @@ export class AnnouncementService {
     return this.http.post(AppComponent.apiEndpoint + 'announcement/updateModerationStatus', {
       announcementId: announcementId,
       moderationStatusId: moderationStatusId
+    }, {
+      withCredentials: true
+    });
+  }
+  createComment(comment) {
+    return this.http.post(AppComponent.apiEndpoint + 'announcement/createComment', comment, {
+      withCredentials: true
+    });
+  }
+  readComments(listFilter: any): Observable<SearchResult<CommentOverviewItem>> {
+    return this.http.post<SearchResult<CommentOverviewItem>>(AppComponent.apiEndpoint + 'announcement/listComments', listFilter, {
+      withCredentials: true
+    });
+  }
+  rate(announcementId, rate) {
+    return this.http.post(AppComponent.apiEndpoint + 'announcement/rateAnnouncement', {
+      announcementId: announcementId,
+      rate: rate
     }, {
       withCredentials: true
     });

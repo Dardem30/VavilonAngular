@@ -7,4 +7,5 @@ export class ProfileInfo {
   loggedIn: boolean;
   email: string;
   role: string;
+  photo: string;
 }

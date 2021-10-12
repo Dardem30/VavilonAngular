@@ -25,5 +25,5 @@
     </mat-card>
   </mat-grid-tile>
 </mat-grid-list>
-<mat-paginator class="mat-paginator-sticky" [length]="this.announcements.length" aria-label="Select page" #paginator
+<mat-paginator class="mat-paginator-sticky" [length]="this.announcementSearchForm.total" aria-label="Select page" #paginator
                (page)="pageChanged()"></mat-paginator>

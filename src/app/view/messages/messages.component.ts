@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MainComponent} from "../main/main.component";
 import {MessageService} from "../../services/MessageService";
 import {Conversation} from "../../bo/chat/Conversation";
@@ -13,16 +13,20 @@ import {UserLight} from "../../bo/user/UserLight";
 })
 export class MessagesComponent implements OnInit, OnDestroy {
   mainComponentInstance: MainComponent;
+  allConversations: Conversation[] = null;
   conversations: Conversation[] = [];
   messages: Message[] = [];
   conversationListFilter = {
     conversationId: null,
     start: 0,
-    limit: 50
+    limit: 50,
+    total: 100
   };
   totalMessages = 0;
   currentChatSubscriptionId: string;
   currentConversation: Conversation = null;
+  searchConversationText: string;
+  @ViewChild('chat') chat: ElementRef;
 
   constructor(private messageService: MessageService) {
   }
@@ -48,17 +52,24 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.openSocket();
     this.conversationListFilter.conversationId = conversation.conversationId;
     this.messageService.getMessagesOfConversation(this.conversationListFilter).subscribe(result => {
-      console.log(result);
       this.messages = result.result;
+      this.conversationListFilter.total = result.total;
       this.totalMessages = result.total;
+      const scope = this;
+      setTimeout(function () {
+        scope.chat.nativeElement.scrollTop = scope.chat.nativeElement.scrollHeight;
+      }, 200);
     })
   }
 
   openSocket() {
     this.closeConversation();
     this.currentChatSubscriptionId = this.mainComponentInstance.stompClient.subscribe('/socket-publisher/conversation/' + this.currentConversation.conversationId, (messageJson) => {
-      console.log(JSON.parse(messageJson.body))
       this.messages.push(JSON.parse(messageJson.body));
+      const scope = this;
+      setTimeout(function () {
+        scope.chat.nativeElement.scrollTop = scope.chat.nativeElement.scrollHeight;
+      }, 200);
     }, {
       withCredentials: true
     }).id;
@@ -88,5 +99,20 @@ export class MessagesComponent implements OnInit, OnDestroy {
     message.text = chatMessageField.value;
     message.conversation = this.currentConversation;
     this.messageService.sendMessage(message);
+    chatMessageField.value = '';
+  }
+
+  searchConversations() {
+    if (this.allConversations == null) {
+      this.allConversations = this.conversations;
+    }
+    this.conversations = this.allConversations.filter(record => {
+      for (let word of this.searchConversationText.split(' ')) {
+        if (this.getConversationNames(record).toLowerCase().indexOf(word.toLowerCase()) === -1) {
+          return false;
+        }
+      }
+      return true;
+    });
   }
 }

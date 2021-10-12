@@ -19,4 +19,5 @@ export class Announcement {
   announcementDate;
   polygons: Polygon[];
   moderationStatus: ModerationStatus;
+  rating;
 }

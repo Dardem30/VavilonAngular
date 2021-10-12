@@ -1,0 +1,95 @@
+<div style="padding: 0 30%">
+  <div class="main-container">
+    <div class="profile-content">
+      <div class="profile-img" >
+        <img src="assets/nophoto.png" *ngIf="getAuthInfo().userId !== userId"/>
+
+        <div class="picture-container"  *ngIf="getAuthInfo().userId === userId">
+          <div class="picture">
+            <img [src]="getAuthInfo().photo" class="picture-src" title="">
+            <input type="file" class="" (change)="profilePhotoUploaded($event)" accept="image/jpeg,image/jpg,image/png">
+          </div>
+        </div>
+
+        <div class="name">
+          <h2>{{userProfileInfo.username}}</h2>
+          <span>ИП</span>
+        </div>
+      </div>
+
+      <button mat-icon-button (click)="close()" style="margin-bottom: 50px" *ngIf="previousComponent != null">
+        <mat-icon>
+          close
+        </mat-icon>
+      </button>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="body-content">
+      <ul>
+        <li><a href="#" [class]="activeTab == tabs.HOME ? 'active' : ''" (click)="changeTab(tabs.HOME)">Home</a></li>
+        <li><a href="#" [class]="activeTab == tabs.ANNOUNCEMENTS ? 'active' : ''"
+               (click)="changeTab(tabs.ANNOUNCEMENTS)">Announcements</a></li>
+      </ul>
+
+      <div *ngIf="activeTab == tabs.HOME">
+        <div class="main-title">
+          <mat-form-field appearance="fill" (focusout)="saveInfo()" style="width: 100%">
+            <mat-label>Info</mat-label>
+            <textarea style="min-height: 200px" matInput [(ngModel)]="userProfileInfo.info"
+                      *ngIf="getCurrentUserInfo().loggedIn ? getCurrentUserInfo().userId == userId : false"></textarea>
+            <textarea style="min-height: 200px" matInput [(ngModel)]="userProfileInfo.info"
+                      *ngIf="getCurrentUserInfo().loggedIn ? getCurrentUserInfo().userId != userId : true"
+                      readonly></textarea>
+          </mat-form-field>
+        </div>
+        <div class="main">
+          <div class="card">
+            <p>Comments</p>
+            <p class="num">{{userProfileInfo.countComments}}</p>
+          </div>
+          <div class="card bg-dark">
+            <p>Average rate</p>
+            <p class="num">{{userProfileInfo.averageRate == null ? 0 : userProfileInfo.averageRate}}</p>
+          </div>
+          <div class="card">
+            <p>Announcements</p>
+            <p class="num">{{userProfileInfo.countAnnouncements}}</p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeTab == tabs.ANNOUNCEMENTS" style="width: 100%; margin: 0">
+        <mat-grid-list cols="2" rowHeight="0.45:1">
+          <mat-grid-tile *ngFor="let announcement of announcements">
+            <mat-card class="example-card" style="margin: 10px">
+              <mat-card-header>
+                <div mat-card-avatar class="example-header-image"
+                     style="background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');"></div>
+                <mat-card-title>{{announcement.userName}}</mat-card-title>
+                <mat-card-subtitle>Тип</mat-card-subtitle>
+              </mat-card-header>
+              <img mat-card-image src="https://drive.google.com/uc?export=view&id={{announcement.image}}"
+                   style="max-height: 380px; max-width: 465px">
+              <mat-card-content>
+                <h2>{{announcement.productName}}</h2>
+                <p>
+                  Описание: {{announcement.text}}
+                </p>
+                <p>
+                  Цена: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
+                  Объем: {{announcement.measure}}<br>
+                  Статус модерации: {{announcement.moderationStatusName}}<br>
+                </p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button (click)="viewAnnouncement(announcement)">MORE</button>
+              </mat-card-actions>
+            </mat-card>
+          </mat-grid-tile>
+        </mat-grid-list>
+        <mat-paginator [length]="this.announcementSearchForm.total" aria-label="Select page" #paginator
+                       (page)="pageChanged()" *ngIf="activeTab == tabs.ANNOUNCEMENTS"
+                       style="background-color: #f0f0f0;"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

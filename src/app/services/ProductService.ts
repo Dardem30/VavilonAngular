@@ -46,7 +46,6 @@ export class ProductService {
   }
 
   uploadAttachments(formDataForUploadingFiles: FormData) {
-    console.log(formDataForUploadingFiles);
     return this.http.post<any>(AppComponent.apiEndpoint + 'product/uploadProductAttachment', formDataForUploadingFiles, {
       withCredentials: true
     });

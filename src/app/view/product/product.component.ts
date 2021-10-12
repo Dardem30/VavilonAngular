@@ -19,6 +19,7 @@ export class ProductComponent implements OnInit {
   productsSearchForm: any = {
     start: 0,
     limit: 50,
+    total: 100,
     sort: {
       property: "productId",
       direction: "DESC"
@@ -33,7 +34,8 @@ export class ProductComponent implements OnInit {
 
   searchProducts() {
     this.productService.search(this.productsSearchForm).subscribe(result => {
-      this.products = result.result
+      this.products = result.result;
+      this.productsSearchForm.total = result.total;
     });
   }
 

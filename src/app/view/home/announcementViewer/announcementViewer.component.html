@@ -69,11 +69,17 @@
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="close()">
     Close
   </button>
+  <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="sellerProfile()">
+    Seller profile
+  </button>
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="chat()">
     Chat
   </button>
-  <div style="float: right">
-    <mat-form-field appearance="fill" *ngIf="getProfileInfo().role === 'ADMIN'"
+  <ngx-material-rating [(ngModel)]="announcement.rating" [max]="5"
+                       *ngIf="getProfileInfo() == null || announcement.user == null || announcement.user.userId != getProfileInfo().userId"
+                       (change)="rate()"  [matTooltip]="announcement.rating"></ngx-material-rating>
+  <div style="float: right" *ngIf="getProfileInfo().role === 'ADMIN'">
+    <mat-form-field appearance="fill"
                     style="margin-right: 10px; display: inline-block; width: 200px">
       <mat-label>[Select moderation status]</mat-label>
       <mat-select [(ngModel)]="announcement.moderationStatus.moderationStatusId">
@@ -156,3 +162,118 @@
 <mat-divider style="margin-bottom: 10px"></mat-divider>
 
 <div id="map" style="margin-bottom: 10px"></div>
+<mat-divider style="margin-bottom: 10px"></mat-divider>
+<div style="padding: 0 30%">
+  <mat-form-field appearance="fill" style="width: 100%">
+    <mat-label>Comment</mat-label>
+    <textarea matInput style="height: 200px" [(ngModel)]="commentText"></textarea>
+  </mat-form-field>
+  <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block"
+          (click)="submitComment(null)">
+    Submit
+  </button>
+  <mat-divider style="margin-bottom: 10px"></mat-divider>
+  <!-- Comment 1 start -->
+  <div class="comment" [id]="'comment-' + comment.commentId" *ngFor="let comment of comments">
+    <a [href]="'#comment-' + comment.commentId" class="comment-border-link">
+      <span class="sr-only">Jump to comment-1</span>
+    </a>
+    <div class="comment-heading">
+      <div class="comment-voting">
+        <button type="button">
+          <span aria-hidden="true">&#9650;</span>
+          <span class="sr-only">Vote up</span>
+        </button>
+        <button type="button">
+          <span aria-hidden="true">&#9660;</span>
+          <span class="sr-only">Vote down</span>
+        </button>
+      </div>
+      <div class="comment-info">
+        <a href="#" class="comment-author">{{comment.username}}</a>
+        <p class="m-0">
+          {{comment.createTime | date: 'dd-MM-yyyy HH:mm'}}
+        </p>
+      </div>
+      <span style="flex: 1 1 auto;"></span>
+      <p style="margin-top: 15px; padding-right: 10px" *ngIf="comment.rate != null">Rated:</p>
+      <ngx-material-rating [(ngModel)]="comment.rate" [max]="5" [dense]="true" *ngIf="comment.rate != null" [matTooltip]="comment.rate"></ngx-material-rating>
+    </div>
+
+    <div class="comment-body">
+      <p>
+        {{comment.text}}
+      </p>
+      <button type="button" (click)="comment.showReplyDialog = !comment.showReplyDialog">Reply</button>
+      <div *ngIf="comment.showReplyDialog">
+        <mat-form-field appearance="fill" style="width: 100%">
+          <mat-label>Comment</mat-label>
+          <textarea matInput style="height: 200px" [(ngModel)]="commentText"></textarea>
+        </mat-form-field>
+        <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block"
+                (click)="submitComment(comment)">
+          Submit
+        </button>
+      </div>
+    </div>
+    <ng-container
+      *ngTemplateOutlet="recursiveReplyTmpl; context:{ childComments: comment.childComments }"
+    ></ng-container>
+
+    <ng-template #recursiveReplyTmpl let-childComments="childComments">
+      <div class="replies" *ngFor="let childComment of childComments">
+        <!-- Comment 2 start -->
+        <div class="comment" [id]="'comment-' + childComment.commentId">
+          <a [href]="'#comment-' + childComment.commentId" class="comment-border-link">
+            <span class="sr-only">Jump to comment-2</span>
+          </a>
+          <div class="comment-heading">
+            <div class="comment-voting">
+              <button type="button">
+                <span aria-hidden="true">&#9650;</span>
+                <span class="sr-only">Vote up</span>
+              </button>
+              <button type="button">
+                <span aria-hidden="true">&#9660;</span>
+                <span class="sr-only">Vote down</span>
+              </button>
+            </div>
+            <div class="comment-info">
+              <a href="#" class="comment-author">{{childComment.username}}</a>
+              <p class="m-0">
+                {{childComment.createTime | date: 'dd-MM-yyyy HH:mm'}}
+              </p>
+            </div>
+            <span style="flex: 1 1 auto;"></span>
+            <p style="padding-top: 15px; padding-right: 10px" *ngIf="childComment.rate != null">Rated:</p>
+            <ngx-material-rating [(ngModel)]="childComment.rate" [max]="5" [dense]="true" *ngIf="childComment.rate != null" [matTooltip]="childComment.rate"></ngx-material-rating>
+          </div>
+
+          <div class="comment-body">
+            <p>
+              {{childComment.text}}
+            </p>
+            <button type="button" (click)="childComment.showReplyDialog = !childComment.showReplyDialog">Reply</button>
+            <div *ngIf="childComment.showReplyDialog">
+              <mat-form-field appearance="fill" style="width: 100%">
+                <mat-label>Comment</mat-label>
+                <textarea matInput style="height: 200px" [(ngModel)]="commentText"></textarea>
+              </mat-form-field>
+              <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block"
+                      (click)="submitComment(childComment)">
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-container
+          *ngTemplateOutlet="recursiveReplyTmpl; context:{ childComments: childComment.childComments }"
+        ></ng-container>
+        <!-- Comment 2 end -->
+      </div>
+    </ng-template>
+  </div>
+  <mat-paginator [length]="this.commentsListFilter.total" aria-label="Select page" #paginator
+                 (page)="pageChanged()"></mat-paginator>
+  <!-- Comment 1 end -->
+</div>

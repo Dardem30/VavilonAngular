@@ -14,7 +14,10 @@ export class ApproveAnnouncementOverviewComponent {
   announcements: AnnouncementOverviewItem[] = [];
   mainComponentInstance: MainComponent;
   @ViewChild('paginator') paginator: MatPaginator;
-  announcementSearchForm: any;
+  announcementSearchForm: any = {
+    limit: 50,
+    total: 100
+  };
   isLoading:boolean = true;
 
   constructor(private announcementService: AnnouncementService) {
@@ -26,7 +29,8 @@ export class ApproveAnnouncementOverviewComponent {
     this.announcementSearchForm = announcementSearchForm;
     this.isLoading = true;
     this.announcementService.search(this.announcementSearchForm).subscribe(result => {
-      this.announcements = result.result
+      this.announcements = result.result;
+      this.announcementSearchForm.total = result.total;
       this.isLoading = false;
     });
   }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MapLoaderService} from "../../../services/MapLoaderService";
 import {ContactService} from "../../../services/ContactService";
 import {Contact} from "../../../bo/contact/Contact";
@@ -13,6 +13,9 @@ import {Polygon} from "../../../bo/announcement/Polygon";
 import {Coordinate} from "../../../bo/announcement/Coordinate";
 import {MainComponent, MainTabs} from "../../main/main.component";
 import {ModerationStatus} from "../../../bo/announcement/ModerationStatus";
+import {Comment} from "../../../bo/announcement/Comment";
+import {CommentOverviewItem} from "../../../bo/announcement/CommentOverviewItem";
+import {MatPaginator} from "@angular/material/paginator";
 
 declare const google: any;
 
@@ -32,7 +35,20 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   announcementId;
   images: string[] = [];
   mainComponentInstance: MainComponent;
-  previousComponent: MainTabs;
+  previousComponent = null;
+  commentText: string = '';
+  commentsListFilter = {
+    start: 0,
+    limit: 50,
+    total: 100,
+    announcementId: null,
+    sort: {
+      property: "createTime",
+      direction: "DESC"
+    }
+  };
+  comments: CommentOverviewItem[] = [];
+  @ViewChild('paginator') paginator: MatPaginator;
 
   constructor(
     private contactService: ContactService,
@@ -45,10 +61,10 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-
     this.announcementService.read(this.announcementId).subscribe(result => {
-      console.log(result);
       this.announcement = result;
+      this.commentsListFilter.announcementId = this.announcement.announcementId;
+      this.readComments();
       MapLoaderService.load().then(() => {
         this.drawPolygon();
       })
@@ -127,7 +143,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   }
 
   close() {
-    this.mainComponentInstance.switchTab(this.previousComponent, null, false);
+    this.mainComponentInstance.switchTab(this.previousComponent.component, this.previousComponent.params, false);
   }
 
   chat() {
@@ -142,5 +158,50 @@ export class AnnouncementViewerComponent implements AfterViewInit {
     this.announcementService.updateModerationStatus(this.announcement.announcementId, this.announcement.moderationStatus.moderationStatusId).subscribe(result => {
       this.close();
     });
+  }
+
+  rate() {
+    this.announcementService.rate(this.announcement.announcementId, this.announcement.rating).subscribe(result => {
+      this.announcement.rating = result;
+    })
+  }
+
+  submitComment(rootComment) {
+    const comment = new Comment();
+    comment.createTime = new Date();
+    comment.announcementId = this.announcement.announcementId;
+    comment.text = this.commentText;
+    comment.userId = AppComponent.profileInfo.userId;
+    if (rootComment != null) {
+      comment.rootCommentId = rootComment.commentId;
+      rootComment.showReplyDialog = false;
+    }
+    this.announcementService.createComment(comment).subscribe(() => {
+      this.readComments();
+    });
+  }
+  readComments() {
+    this.announcementService.readComments(this.commentsListFilter).subscribe(result => {
+      this.comments = result.result;
+      this.commentsListFilter.total = result.total;
+    })
+  }
+
+  pageChanged() {
+    this.commentsListFilter.start = this.commentsListFilter.limit * this.paginator.pageIndex;
+    this.readComments();
+  }
+
+  sellerProfile() {
+    this.mainComponentInstance.switchTab(MainTabs.PROFILE, {
+      userId: this.announcement.user.userId,
+      previousComponent: {
+        component: MainTabs.ANNOUNCEMENT_VIEWER,
+        params: {
+          previousComponent: this.previousComponent,
+          announcementId: this.announcementId
+        }
+      }
+    }, false);
   }
 }
