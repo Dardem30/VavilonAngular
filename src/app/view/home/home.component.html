@@ -1,14 +1,24 @@
+<div *ngIf="isLoading">
+  <div class="lds-circle">
+    <div></div>
+  </div>
+  <br>
+</div>
 <mat-grid-list cols="3" rowHeight="0.93:1">
   <mat-grid-tile *ngFor="let announcement of announcements">
     <mat-card class="example-card">
       <mat-card-header>
         <div mat-card-avatar class="example-header-image"
-             style="background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');"></div>
+             [style]="'background-image: url(' + (announcement.ownerPhoto == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + announcement.ownerPhoto) + ');'"></div>
         <mat-card-title>{{announcement.userName}}</mat-card-title>
-        <mat-card-subtitle><ngx-material-rating [(ngModel)]="announcement.rating" [max]="5" [dense]="true" *ngIf="announcement.rating != null" [matTooltip]="announcement.rating"></ngx-material-rating></mat-card-subtitle>
+        <mat-card-subtitle>
+          <ngx-material-rating [(ngModel)]="announcement.rating" [max]="5" [dense]="true"
+                               *ngIf="announcement.rating != null"
+                               [matTooltip]="announcement.rating"></ngx-material-rating>
+        </mat-card-subtitle>
       </mat-card-header>
       <img mat-card-image src="https://drive.google.com/uc?export=view&id={{announcement.image}}"
-           style="max-height: 380px; max-width: 465px">
+           style="max-height: 350px; max-width: 465px">
       <mat-card-content>
         <h2>{{announcement.productName}}</h2>
         <p>
@@ -28,5 +38,6 @@
 <!--<div class="lds-facebook">-->
 <!--  <div></div><div></div><div></div>-->
 <!--</div>-->
-<mat-paginator class="mat-paginator-sticky" [length]="this.announcementSearchForm.total" aria-label="Select page" #paginator
+<mat-paginator class="mat-paginator-sticky" [length]="this.announcementSearchForm.total" aria-label="Select page"
+               #paginator
                (page)="pageChanged()"></mat-paginator>

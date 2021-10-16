@@ -33,7 +33,6 @@ import {MessagesComponent} from "../messages/messages.component";
 import {ApproveAnnouncementOverviewComponent} from "../approveAnnouncementOverview/approveAnnouncementOverview.component";
 import {ModerationStatus} from "../../bo/announcement/ModerationStatus";
 import {ProfileComponent} from "../profile/profile.component";
-import {SwitchTabParams} from "../../bo/beans/SwitchTabParams";
 
 declare const google: any;
 
@@ -149,7 +148,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
     setTimeout(function () {
       let factory = scope.componentFactoryResolver.resolveComponentFactory(HomeComponent);
-      let ref = scope.mainContent.createComponent(factory);
+      let ref: any = scope.mainContent.createComponent(factory);
+      scope.animateDiv(ref._rootLView[0], null)
       ref.instance.mainComponentInstance = scope;
       ref.changeDetectorRef.detectChanges();
       scope.currentComponent = ref;
@@ -243,104 +243,142 @@ export class MainComponent implements OnInit, AfterViewInit {
       map.fitBounds(bounds);
     });
   }
-  switchTab(tab: MainTabs, params: SwitchTabParams, toggle: boolean): void {
+  animateDiv(div, params) {
+    if (params != null && params.isClose) {
+      console.log('test')
+      div.classList.add('main-content_slide-in-right');
+      setTimeout(function () {
+        div.classList.remove('main-content_slide-in-right');
+      }, 510);
+   } else {
+      div.classList.add('main-content_slide-in-left');
+      setTimeout(function () {
+        div.classList.remove('main-content_slide-in-left');
+      }, 510);
+   }
+  }
+  switchTab(tab: MainTabs, params, toggle: boolean): void {
     if (this.panelOpenState) {
       this.accordionHeader.close();
       this.panelOpenState = false
     }
-    this.mainContent.remove(0);
-    this.activeTab = tab;
-    let factory;
-    let ref;
-    switch (tab) {
-      case MainTabs.HOME:
-        factory = this.componentFactoryResolver.resolveComponentFactory(HomeComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.instance.mainComponentInstance = this;
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        this.searchAnnouncement();
-        break
-      case MainTabs.APPROVE_ANNOUNCEMENT_OVERVIEW:
-        factory = this.componentFactoryResolver.resolveComponentFactory(ApproveAnnouncementOverviewComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.instance.mainComponentInstance = this;
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        this.searchAnnouncement();
-        break
-      case MainTabs.CARDS:
-        factory = this.componentFactoryResolver.resolveComponentFactory(UserCardComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
-      case MainTabs.PRODUCTS:
-        factory = this.componentFactoryResolver.resolveComponentFactory(ProductComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
-      case MainTabs.CONTACT:
-        factory = this.componentFactoryResolver.resolveComponentFactory(ContactComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
-      case MainTabs.ANNOUNCEMENT:
-        factory = this.componentFactoryResolver.resolveComponentFactory(AnnouncementComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.instance.mainComponentInstance = this;
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
-      case MainTabs.MESSAGES:
-        factory = this.componentFactoryResolver.resolveComponentFactory(MessagesComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.instance.mainComponentInstance = this;
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
-      case MainTabs.PROFILE:
-        factory = this.componentFactoryResolver.resolveComponentFactory(ProfileComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.instance.mainComponentInstance = this;
-        if (params != null) {
-          for (let name in params) {
-            ref.instance[name] = params[name];
-          }
-        }
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
-      case MainTabs.ANNOUNCEMENT_DETAILS:
-        factory = this.componentFactoryResolver.resolveComponentFactory(AnnouncementDetailsComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.instance.mainComponentInstance = this;
-        if (params != null) {
-          for (let name in params) {
-            ref.instance[name] = params[name];
-          }
-        }
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
-      case MainTabs.ANNOUNCEMENT_VIEWER:
-        factory = this.componentFactoryResolver.resolveComponentFactory(AnnouncementViewerComponent);
-        ref = this.mainContent.createComponent(factory);
-        ref.instance.mainComponentInstance = this;
-        if (params != null) {
-          for (let name in params) {
-            ref.instance[name] = params[name];
-          }
-        }
-        ref.changeDetectorRef.detectChanges();
-        this.currentComponent = ref;
-        break
+    const viewRef: any = this.mainContent.get(0);
+    if (params != null && params.isClose) {
+      viewRef._view[0].classList.add('main-content_slide-out-left');
+    } else {
+      viewRef._view[0].classList.add('main-content_slide-out-right');
     }
-    if (toggle) {
-      this.profileSideNav.toggle();
-    }
+    const scope = this;
+    setTimeout(function () {
+      if (params != null && params.isClose) {
+        viewRef._view[0].classList.remove('main-content_slide-out-left');
+      } else {
+        viewRef._view[0].classList.remove('main-content_slide-out-right');
+      }
+      scope.mainContent.remove(0);
+      scope.activeTab = tab;
+      let factory;
+      let ref;
+      switch (tab) {
+        case MainTabs.HOME:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(HomeComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.instance.mainComponentInstance = scope;
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          scope.searchAnnouncement();
+          break
+        case MainTabs.APPROVE_ANNOUNCEMENT_OVERVIEW:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(ApproveAnnouncementOverviewComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.instance.mainComponentInstance = scope;
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          scope.searchAnnouncement();
+          break
+        case MainTabs.CARDS:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(UserCardComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+        case MainTabs.PRODUCTS:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(ProductComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+        case MainTabs.CONTACT:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(ContactComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+        case MainTabs.ANNOUNCEMENT:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(AnnouncementComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.instance.mainComponentInstance = scope;
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+        case MainTabs.MESSAGES:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(MessagesComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.instance.mainComponentInstance = scope;
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+        case MainTabs.PROFILE:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(ProfileComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.instance.mainComponentInstance = scope;
+          if (params != null) {
+            for (let name in params) {
+              ref.instance[name] = params[name];
+            }
+          }
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+        case MainTabs.ANNOUNCEMENT_DETAILS:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(AnnouncementDetailsComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.instance.mainComponentInstance = scope;
+          if (params != null) {
+            for (let name in params) {
+              ref.instance[name] = params[name];
+            }
+          }
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+        case MainTabs.ANNOUNCEMENT_VIEWER:
+          factory = scope.componentFactoryResolver.resolveComponentFactory(AnnouncementViewerComponent);
+          ref = scope.mainContent.createComponent(factory);
+          scope.animateDiv(ref._rootLView[0], params)
+          ref.instance.mainComponentInstance = scope;
+          if (params != null) {
+            for (let name in params) {
+              ref.instance[name] = params[name];
+            }
+          }
+          ref.changeDetectorRef.detectChanges();
+          scope.currentComponent = ref;
+          break
+      }
+      if (toggle) {
+        scope.profileSideNav.toggle();
+      }
+    }, 500);
   }
 
   onSearchIconClick(): void {
@@ -363,7 +401,7 @@ export class MainComponent implements OnInit, AfterViewInit {
           this.authSideNavErrorMessage = '';
           this.authSideNav.toggle();
           this.securityService.getProfileInfo().subscribe(profileInfo => {
-            profileInfo.photo = 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
+            profileInfo.photo = profileInfo.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
             AppComponent.profileInfo = profileInfo;
             AppComponent.profileInfo.loggedIn = true;
           });
@@ -442,7 +480,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   logout() {
     this.securityService.logout();
     AppComponent.logout();
-    this.switchTab(MainTabs.HOME, null, false);
+    this.switchTab(MainTabs.HOME, {
+      isClose: true
+    }, false);
   }
 
 
@@ -520,13 +560,18 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.showChat = true;
     this.currentChatSubscriptionId = this.stompClient.subscribe('/socket-publisher/conversation/' + this.conversation.conversationId, (messageJson) => {
       this.messages.push(JSON.parse(messageJson.body));
-      this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
+      this.totalMessages += 1;
+      const scope = this;
+      setTimeout(function () {
+        scope.chatHistory.nativeElement.scrollTop = scope.chatHistory.nativeElement.scrollHeight;
+      }, 200);
     }, {
       withCredentials: true
     }).id;
   }
 
   startChat(user) {
+    this.conversationListFilter.start = 0;
     this.showChat = true;
     this.usersInCurrentConversation = [user];
     this.messageService.getConversation(this.getUserIdsInCurrentConversation()).subscribe(conversation => {
@@ -539,9 +584,33 @@ export class MainComponent implements OnInit, AfterViewInit {
           this.messages = result.result;
           this.conversationListFilter.total = result.total;
           this.totalMessages = result.total;
+          const scope = this;
+          setTimeout(function () {
+            scope.chatHistory.nativeElement.scrollTop = scope.chatHistory.nativeElement.scrollHeight;
+          }, 200);
         })
       }
     })
+  }
+  onChatScroll(event) {
+    if (event.target.scrollTop == 0 && this.conversationListFilter.start < this.totalMessages) {
+      this.conversationListFilter.start += 50;
+      this.messageService.getMessagesOfConversation(this.conversationListFilter).subscribe(result => {
+        const firstMessageId = this.messages[0].messageId;
+        const resultMessages = [];
+        for (let message of result.result) {
+          resultMessages.push(message);
+        }
+        for (let message of this.messages) {
+          resultMessages.push(message);
+        }
+        this.messages = resultMessages;
+        const scope = this;
+        setTimeout(function () {
+          scope.chatHistory.nativeElement.scrollTop = document.getElementById('chatMessage-' + firstMessageId).offsetTop - 70;
+        }, 100);
+      });
+    }
   }
 
   sendMessage(chatMessageField: HTMLInputElement) {

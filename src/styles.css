@@ -1,1 +1,135 @@
 /* You can add global styles to this file, and also import other style files */
+
+.main-content_slide-in-left {
+  -webkit-animation: slide-in-left .5s cubic-bezier(.25, .46, .45, .94) both;
+  animation: slide-in-left .5s cubic-bezier(.25, .46, .45, .94) both;
+}
+
+@-webkit-keyframes slide-in-left {
+  0% {
+    -webkit-transform: translateX(-1000px);
+    transform: translateX(-1000px);
+    opacity: 0
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+}
+
+.main-content_slide-in-right {
+  -webkit-animation: slide-in-right .5s cubic-bezier(.25, .46, .45, .94) both;
+  animation: slide-in-right .5s cubic-bezier(.25, .46, .45, .94) both
+}
+
+@-webkit-keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+}
+
+@keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    -webkit-transform: translateX(-1000px);
+    transform: translateX(-1000px);
+    opacity: 0
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+}
+
+.main-content_slide-out-right {
+  -webkit-animation: slide-out-right .5s cubic-bezier(.55, .085, .68, .53) both;
+  animation: slide-out-right .5s cubic-bezier(.55, .085, .68, .53) both
+}
+
+@-webkit-keyframes slide-out-right {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+  100% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0
+  }
+}
+
+@keyframes slide-out-right {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+  100% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0
+  }
+}
+
+.main-content_slide-out-left {
+  -webkit-animation: slide-out-left .5s cubic-bezier(.55, .085, .68, .53) both;
+  animation: slide-out-left .5s cubic-bezier(.55, .085, .68, .53) both
+}
+
+@-webkit-keyframes slide-out-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+  100% {
+    -webkit-transform: translateX(-1000px);
+    transform: translateX(-1000px);
+    opacity: 0
+  }
+}
+
+@keyframes slide-out-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1
+  }
+  100% {
+    -webkit-transform: translateX(-1000px);
+    transform: translateX(-1000px);
+    opacity: 0
+  }
+}
+
+.loadWrapper {
+  background: rgba(0,0,0,0.3);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top:0px;
+  left:0px;
+  z-index: 99999;
+}

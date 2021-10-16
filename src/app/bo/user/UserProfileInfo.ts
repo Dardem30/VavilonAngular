@@ -4,5 +4,6 @@ export class UserProfileInfo {
   countAnnouncements;
   countComments;
   averageRate;
+  photo;
   username;
 }

@@ -48,6 +48,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   getConversation(conversation: Conversation) {
+    this.conversationListFilter.start = 0;
     this.currentConversation = conversation;
     this.openSocket();
     this.conversationListFilter.conversationId = conversation.conversationId;
@@ -66,6 +67,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.closeConversation();
     this.currentChatSubscriptionId = this.mainComponentInstance.stompClient.subscribe('/socket-publisher/conversation/' + this.currentConversation.conversationId, (messageJson) => {
       this.messages.push(JSON.parse(messageJson.body));
+      this.totalMessages += 1;
       const scope = this;
       setTimeout(function () {
         scope.chat.nativeElement.scrollTop = scope.chat.nativeElement.scrollHeight;
@@ -114,5 +116,37 @@ export class MessagesComponent implements OnInit, OnDestroy {
       }
       return true;
     });
+  }
+
+  getConversationPhoto(conversation: Conversation) {
+    if (conversation != null) {
+      for (let user of conversation.users) {
+        if (!this.isMe(user.userId) && user.photo != null) {
+          return 'https://drive.google.com/uc?export=view&id=' + user.photo;
+        }
+      }
+    }
+    return 'assets/nophoto.png';
+  }
+
+  onChatScroll(event) {
+    if (event.target.scrollTop == 0 && this.conversationListFilter.start < this.totalMessages) {
+      this.conversationListFilter.start += 50;
+      this.messageService.getMessagesOfConversation(this.conversationListFilter).subscribe(result => {
+        const firstMessageId = this.messages[0].messageId;
+        const resultMessages = [];
+        for (let message of result.result) {
+          resultMessages.push(message);
+        }
+        for (let message of this.messages) {
+          resultMessages.push(message);
+        }
+        this.messages = resultMessages;
+        const scope = this;
+        setTimeout(function () {
+          scope.chat.nativeElement.scrollTop = document.getElementById('message-' + firstMessageId).offsetHeight - 120;
+        }, 200)
+      });
+    }
   }
 }

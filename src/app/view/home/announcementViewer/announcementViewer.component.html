@@ -69,15 +69,18 @@
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="close()">
     Close
   </button>
-  <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="sellerProfile()">
+  <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block"
+          (click)="sellerProfile(announcement.user.userId)">
     Seller profile
   </button>
-  <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="chat()">
+  <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="chat()"
+          *ngIf="getProfileInfo().loggedIn">
     Chat
   </button>
   <ngx-material-rating [(ngModel)]="announcement.rating" [max]="5"
                        *ngIf="getProfileInfo() == null || announcement.user == null || announcement.user.userId != getProfileInfo().userId"
-                       (change)="rate()"  [matTooltip]="announcement.rating"></ngx-material-rating>
+                       (change)="rate()" [matTooltip]="announcement.rating"
+                       [readonly]="!getProfileInfo().loggedIn"></ngx-material-rating>
   <div style="float: right" *ngIf="getProfileInfo().role === 'ADMIN'">
     <mat-form-field appearance="fill"
                     style="margin-right: 10px; display: inline-block; width: 200px">
@@ -117,7 +120,8 @@
   <mat-form-field appearance="fill">
     <mat-label>[Select measure]</mat-label>
     <mat-select [(ngModel)]="announcement.measure.measureCode">
-      <mat-option *ngFor="let measure of measures" [value]="measure.measureCode" disabled>{{measure.name}}</mat-option>
+      <mat-option *ngFor="let measure of measures" [value]="measure.measureCode"
+                  disabled>{{measure.name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <br>
@@ -190,14 +194,15 @@
         </button>
       </div>
       <div class="comment-info">
-        <a href="#" class="comment-author">{{comment.username}}</a>
+        <a href="#" class="comment-author" (click)="sellerProfile(comment.userId)">{{comment.username}}</a>
         <p class="m-0">
           {{comment.createTime | date: 'dd-MM-yyyy HH:mm'}}
         </p>
       </div>
       <span style="flex: 1 1 auto;"></span>
       <p style="margin-top: 15px; padding-right: 10px" *ngIf="comment.rate != null">Rated:</p>
-      <ngx-material-rating [(ngModel)]="comment.rate" [max]="5" [dense]="true" *ngIf="comment.rate != null" [matTooltip]="comment.rate"></ngx-material-rating>
+      <ngx-material-rating [(ngModel)]="comment.rate" [max]="5" [dense]="true" *ngIf="comment.rate != null"
+                           [matTooltip]="comment.rate"></ngx-material-rating>
     </div>
 
     <div class="comment-body">
@@ -239,21 +244,25 @@
               </button>
             </div>
             <div class="comment-info">
-              <a href="#" class="comment-author">{{childComment.username}}</a>
+              <a href="#" class="comment-author"
+                 (click)="sellerProfile(childComment.userId)">{{childComment.username}}</a>
               <p class="m-0">
                 {{childComment.createTime | date: 'dd-MM-yyyy HH:mm'}}
               </p>
             </div>
             <span style="flex: 1 1 auto;"></span>
             <p style="padding-top: 15px; padding-right: 10px" *ngIf="childComment.rate != null">Rated:</p>
-            <ngx-material-rating [(ngModel)]="childComment.rate" [max]="5" [dense]="true" *ngIf="childComment.rate != null" [matTooltip]="childComment.rate"></ngx-material-rating>
+            <ngx-material-rating [(ngModel)]="childComment.rate" [max]="5" [dense]="true"
+                                 *ngIf="childComment.rate != null"
+                                 [matTooltip]="childComment.rate"></ngx-material-rating>
           </div>
 
           <div class="comment-body">
             <p>
               {{childComment.text}}
             </p>
-            <button type="button" (click)="childComment.showReplyDialog = !childComment.showReplyDialog">Reply</button>
+            <button type="button" (click)="childComment.showReplyDialog = !childComment.showReplyDialog">Reply
+            </button>
             <div *ngIf="childComment.showReplyDialog">
               <mat-form-field appearance="fill" style="width: 100%">
                 <mat-label>Comment</mat-label>

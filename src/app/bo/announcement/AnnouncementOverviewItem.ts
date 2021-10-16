@@ -10,6 +10,7 @@ export class AnnouncementOverviewItem {
   measureCode: string;
   measure: string;
   userName: string;
+  ownerPhoto: string;
   moderationStatusName: string;
   rating;
 }

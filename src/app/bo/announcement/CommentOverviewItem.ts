@@ -5,6 +5,7 @@ export class CommentOverviewItem {
   username;
   createTime;
   rate;
+  userId;
   childComments: CommentOverviewItem[] = [];
   showReplyDialog = false;
 }

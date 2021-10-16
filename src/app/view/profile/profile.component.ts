@@ -69,6 +69,13 @@ export class ProfileComponent implements OnInit{
   }
 
   close() {
+    if (this.previousComponent.params == null) {
+      this.previousComponent.params = {
+        isClose: true
+      };
+    } else {
+      this.previousComponent.params.isClose = true;
+    }
     this.mainComponentInstance.switchTab(this.previousComponent.component, this.previousComponent.params, false);
   }
 

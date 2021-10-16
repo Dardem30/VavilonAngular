@@ -17,6 +17,7 @@ import {ContactDetails} from "../../contact/contact.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ProductDetails} from "../../product/product.component";
 import {DomSanitizer} from "@angular/platform-browser";
+import {ModerationStatus} from "../../../bo/announcement/ModerationStatus";
 
 declare const google: any;
 
@@ -54,6 +55,7 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   ) {
     this.announcement.announcementType = new AnnouncementType();
     this.announcement.measure = new Measure();
+    this.announcement.moderationStatus = new ModerationStatus();
   }
 
   ngAfterViewInit() {
@@ -144,7 +146,7 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
     if (this.announcementId != null) {
       for (let polygon of this.announcement.polygons) {
         const coordinates = [];
-        for (let coordinate of polygon  .coordinates) {
+        for (let coordinate of polygon.coordinates) {
           coordinates.push({lat: coordinate.lat, lng: coordinate.lng})
         }
         new google.maps.Polygon({
@@ -164,7 +166,6 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   }
 
   save() {
-    console.log(this.announcement);
     this.announcement.announcementDate = new Date();
     this.announcementService.save(this.announcement).subscribe(result => {
       console.log(result);
@@ -186,7 +187,9 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   }
 
   close() {
-    this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT, null, false);
+    this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT, {
+      isClose: false
+    }, false);
   }
 
   openContactDetails() {
@@ -203,6 +206,7 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
       }
     });
   }
+
   openProductDetails(productId: any) {
     const scope = this;
     this.dialog.open(ProductDetails, {
@@ -221,5 +225,10 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
         }
       }
     });
+  }
+
+  getModerationTextAsHtml(moderationText) {
+    console.log(moderationText.replace('\n', '<br>'));
+    return 'Decline cause: ' + moderationText.replace(/\n/g, '<br>');
   }
 }

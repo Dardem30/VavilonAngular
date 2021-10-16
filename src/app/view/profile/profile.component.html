@@ -2,7 +2,7 @@
   <div class="main-container">
     <div class="profile-content">
       <div class="profile-img" >
-        <img src="assets/nophoto.png" *ngIf="getAuthInfo().userId !== userId"/>
+        <img [src]="userProfileInfo.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + userProfileInfo.photo" *ngIf="getAuthInfo().userId !== userId"/>
 
         <div class="picture-container"  *ngIf="getAuthInfo().userId === userId">
           <div class="picture">
@@ -68,7 +68,7 @@
                 <mat-card-subtitle>Тип</mat-card-subtitle>
               </mat-card-header>
               <img mat-card-image src="https://drive.google.com/uc?export=view&id={{announcement.image}}"
-                   style="max-height: 380px; max-width: 465px">
+                   style="max-height: 350px; max-width: 465px">
               <mat-card-content>
                 <h2>{{announcement.productName}}</h2>
                 <p>

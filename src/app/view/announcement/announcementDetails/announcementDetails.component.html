@@ -19,6 +19,18 @@
 </div>
 <mat-divider></mat-divider>
 <div style="padding: 0 30%">
+  <mat-checkbox [(ngModel)]="announcement.readyForReview" style="margin-left: 5px"
+                [checked]="announcement.readyForReview">Ready for review
+  </mat-checkbox>
+  <br>
+  <mat-form-field appearance="fill">
+    <mat-label>Moderation status</mat-label>
+    <mat-select [(ngModel)]="announcement.moderationStatus.moderationStatusId" disabled>
+      <mat-option *ngFor="let moderationStatus of mainComponentInstance.moderationStatuses"
+                  [value]="moderationStatus.moderationStatusId">{{moderationStatus.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <p style="color: red;margin-left: 5px" *ngIf="announcement.moderationText != null" [innerHTML]="getModerationTextAsHtml(announcement.moderationText)"></p>
   <mat-form-field appearance="fill">
     <mat-label>[Select contacts]</mat-label>
     <mat-select multiple [(ngModel)]="announcement.contacts">
@@ -62,7 +74,9 @@
       </mat-card-content>
       <mat-card-actions>
         <button mat-button (click)="openProductDetails(product.productId)">EDIT</button>
-        <mat-checkbox (change)="selectProduct(product, $event)" [(ngModel)]="product.selectedForAnnouncement" [checked]="product.selectedForAnnouncement">Select</mat-checkbox>
+        <mat-checkbox (change)="selectProduct(product, $event)" [(ngModel)]="product.selectedForAnnouncement"
+                      [checked]="product.selectedForAnnouncement">Select
+        </mat-checkbox>
       </mat-card-actions>
     </mat-card>
   </div>

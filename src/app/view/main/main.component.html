@@ -273,7 +273,7 @@
           <img src="assets/logo.png" style="display: block;margin: 15px auto;width: 80%;">
           <mat-divider></mat-divider>
         </div>
-        <div style="flex: 1 1 auto;">
+        <div style="flex: 1 1 auto;" >
           <div #mainContent></div>
         </div>
       </div>
@@ -285,9 +285,9 @@
           <span class="chat-message-counter">3</span>
         </header>
         <div class="chat" id="main-chat">
-          <div class="chat-history" #chatHistory [scrollTop]="chatHistory.scrollHeight">
-            <div class="chat-message clearfix" *ngFor="let message of messages" id="chatHistory">
-              <img [src]="isYou(message.user.userId) ? 'https://source.unsplash.com/c_GmwfHBDzk/200x200' : 'https://material.angular.io/assets/img/examples/shiba1.jpg'"  alt="" width="32" height="32">
+          <div class="chat-history" #chatHistory (scroll)="onChatScroll($event)">
+            <div class="chat-message clearfix" *ngFor="let message of messages" [id]="'chatMessage-' + message.messageId">
+              <img [src]="message.user.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + message.user.photo"  alt="" width="32" height="32">
               <div class="chat-message-content clearfix" style="word-wrap: break-word">
                 <span class="chat-time">{{message.createTime | date: 'HH:mm'}}</span>
                 <h5 [style.font-weight]="isYou(message.user.userId) ? '700' : 'normal'" [style.color]="isYou(message.user.userId) ? 'red' : 'black'">{{message.user.firstName + ' ' + message.user.lastName}}</h5>

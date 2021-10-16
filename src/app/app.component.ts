@@ -47,7 +47,7 @@ export class AppComponent {
       localStorage.setItem('activateUser', activateUser);
     }
     securityService.getProfileInfo().subscribe(profileInfo => {
-      profileInfo.photo = 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
+      profileInfo.photo = profileInfo.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
       AppComponent.profileInfo = profileInfo;
       AppComponent.profileInfo.loggedIn = true;
       AppComponent.onReceivingProfileInfo();

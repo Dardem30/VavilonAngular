@@ -5,7 +5,7 @@
     </header>
     <ul>
       <li *ngFor="let conversation of conversations" (click)="getConversation(conversation)">
-        <img style="width: 55px;height: 55px" src="https://source.unsplash.com/c_GmwfHBDzk/200x200" alt="">
+        <img style="width: 55px;height: 55px" [src]="getConversationPhoto(conversation)" alt="">
         <div>
           <h2>{{getConversationNames(conversation)}}</h2>
           <h3>
@@ -18,14 +18,14 @@
   </aside>
   <main>
     <header>
-      <img style="width: 55px;height: 55px" src="assets/nophoto.png" alt="">
+      <img style="width: 55px;height: 55px" [src]="getConversationPhoto(currentConversation)" alt="">
       <div>
         <h2 *ngIf="currentConversation != null">Chat with {{getConversationNames(currentConversation)}}</h2>
         <h3>already {{totalMessages}} messages</h3>
       </div>
     </header>
-    <ul id="chat" #chat>
-      <li *ngFor="let message of messages" [class]="isMe(message.user.userId) ? 'me' : 'you'">
+    <ul id="chat" #chat (scroll)="onChatScroll($event)">
+      <li *ngFor="let message of messages" [class]="isMe(message.user.userId) ? 'me' : 'you'" [id]="'message-' + message.messageId">
         <div class="entete">
           <span class="status green" [class]="isMe(message.user.userId) ? 'status blue' : 'status green'"
                 style="margin-right: 10px"></span>

@@ -16,6 +16,8 @@ export class Announcement {
   price;
   currencySign;
   text;
+  moderationText;
+  readyForReview = false;
   announcementDate;
   polygons: Polygon[];
   moderationStatus: ModerationStatus;

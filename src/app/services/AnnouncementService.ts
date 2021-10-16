@@ -53,10 +53,11 @@ export class AnnouncementService {
     return this.http.get<string[]>(AppComponent.apiEndpoint + 'announcement/gallery?announcementId=' + announcementId);
   }
 
-  updateModerationStatus(announcementId, moderationStatusId) {
+  updateModerationStatus(announcementId, moderationStatusId, text) {
     return this.http.post(AppComponent.apiEndpoint + 'announcement/updateModerationStatus', {
       announcementId: announcementId,
-      moderationStatusId: moderationStatusId
+      moderationStatusId: moderationStatusId,
+      text: text
     }, {
       withCredentials: true
     });

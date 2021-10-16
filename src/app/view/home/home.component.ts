@@ -44,6 +44,7 @@ export class HomeComponent {
   viewAnnouncement(announcement: AnnouncementOverviewItem) {
     this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT_VIEWER, {
       announcementId: announcement.announcementId,
+      isClose: false,
       previousComponent: {
         component: MainTabs.HOME,
         params: null

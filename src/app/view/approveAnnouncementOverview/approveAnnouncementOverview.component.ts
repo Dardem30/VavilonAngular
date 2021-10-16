@@ -25,7 +25,8 @@ export class ApproveAnnouncementOverviewComponent {
 
 
   searchAnnouncement(announcementSearchForm: any) {
-    announcementSearchForm.moderationStatusId = ModerationStatuses.TO_BE_REVIEWED
+    announcementSearchForm.moderationStatusIds = [ModerationStatuses.TO_BE_REVIEWED, ModerationStatuses.DECLINED]
+    announcementSearchForm.readyForReview = true;
     this.announcementSearchForm = announcementSearchForm;
     this.isLoading = true;
     this.announcementService.search(this.announcementSearchForm).subscribe(result => {
@@ -43,7 +44,10 @@ export class ApproveAnnouncementOverviewComponent {
   viewAnnouncement(announcement: AnnouncementOverviewItem) {
     this.mainComponentInstance.switchTab(MainTabs.ANNOUNCEMENT_VIEWER, {
       announcementId: announcement.announcementId,
-      previousComponent: MainTabs.APPROVE_ANNOUNCEMENT_OVERVIEW
+      previousComponent: {
+        component: MainTabs.APPROVE_ANNOUNCEMENT_OVERVIEW,
+        params: null
+      }
     }, false);
   }
 }

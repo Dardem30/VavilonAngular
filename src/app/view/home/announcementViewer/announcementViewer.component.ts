@@ -11,11 +11,12 @@ import {ProductService} from "../../../services/ProductService";
 import {AppComponent} from "../../../app.component";
 import {Polygon} from "../../../bo/announcement/Polygon";
 import {Coordinate} from "../../../bo/announcement/Coordinate";
-import {MainComponent, MainTabs} from "../../main/main.component";
+import {MainComponent, MainTabs, ModerationStatuses} from "../../main/main.component";
 import {ModerationStatus} from "../../../bo/announcement/ModerationStatus";
 import {Comment} from "../../../bo/announcement/Comment";
 import {CommentOverviewItem} from "../../../bo/announcement/CommentOverviewItem";
 import {MatPaginator} from "@angular/material/paginator";
+import Swal from "sweetalert2";
 
 declare const google: any;
 
@@ -82,7 +83,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
 
   drawPolygon() {
     this.map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 61, lng:  74},
+      center: {lat: 61, lng: 74},
       zoom: 2
     });
 
@@ -116,7 +117,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
     });
     for (let polygon of this.announcement.polygons) {
       const coordinates = [];
-      for (let coordinate of polygon  .coordinates) {
+      for (let coordinate of polygon.coordinates) {
         coordinates.push({lat: coordinate.lat, lng: coordinate.lng})
       }
       new google.maps.Polygon({
@@ -143,6 +144,13 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   }
 
   close() {
+    if (this.previousComponent.params == null) {
+      this.previousComponent.params = {
+        isClose: true
+      };
+    } else {
+      this.previousComponent.params.isClose = true;
+    }
     this.mainComponentInstance.switchTab(this.previousComponent.component, this.previousComponent.params, false);
   }
 
@@ -155,9 +163,29 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   }
 
   updateModerationStatus() {
-    this.announcementService.updateModerationStatus(this.announcement.announcementId, this.announcement.moderationStatus.moderationStatusId).subscribe(result => {
-      this.close();
-    });
+    if (this.announcement.moderationStatus.moderationStatusId == ModerationStatuses.DECLINED) {
+      Swal.fire({
+        title: 'Describe the issue',
+        input: 'textarea',
+        inputAttributes: {
+          autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.announcementService.updateModerationStatus(this.announcement.announcementId, this.announcement.moderationStatus.moderationStatusId, result.value).subscribe(result => {
+            this.close();
+          });
+       }
+      })
+    } else {
+      this.announcementService.updateModerationStatus(this.announcement.announcementId, this.announcement.moderationStatus.moderationStatusId, null).subscribe(result => {
+        this.close();
+      });
+    }
   }
 
   rate() {
@@ -180,6 +208,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
       this.readComments();
     });
   }
+
   readComments() {
     this.announcementService.readComments(this.commentsListFilter).subscribe(result => {
       this.comments = result.result;
@@ -192,9 +221,9 @@ export class AnnouncementViewerComponent implements AfterViewInit {
     this.readComments();
   }
 
-  sellerProfile() {
+  sellerProfile(userId) {
     this.mainComponentInstance.switchTab(MainTabs.PROFILE, {
-      userId: this.announcement.user.userId,
+      userId: userId,
       previousComponent: {
         component: MainTabs.ANNOUNCEMENT_VIEWER,
         params: {
