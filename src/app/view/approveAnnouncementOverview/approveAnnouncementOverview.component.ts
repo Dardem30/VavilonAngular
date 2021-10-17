@@ -3,6 +3,7 @@ import {AnnouncementService} from "../../services/AnnouncementService";
 import {AnnouncementOverviewItem} from "../../bo/announcement/AnnouncementOverviewItem";
 import {MatPaginator} from "@angular/material/paginator";
 import {MainComponent, MainTabs, ModerationStatuses} from "../main/main.component";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-main',
@@ -49,5 +50,9 @@ export class ApproveAnnouncementOverviewComponent {
         params: null
       }
     }, false);
+  }
+
+  locale() {
+    return AppComponent.locale;
   }
 }

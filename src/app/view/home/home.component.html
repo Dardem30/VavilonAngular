@@ -25,12 +25,12 @@
           {{locale().label.description}}: {{announcement.text}}
         </p>
         <p>
-          Цена: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
-          Объем: {{announcement.measure}}<br>
+          {{locale().label.price}}: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
+          {{locale().label.volume}}: {{announcement.measure}}<br>
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button (click)="viewAnnouncement(announcement)">MORE</button>
+        <button mat-button (click)="viewAnnouncement(announcement)">{{locale().label.more}}</button>
       </mat-card-actions>
     </mat-card>
   </mat-grid-tile>

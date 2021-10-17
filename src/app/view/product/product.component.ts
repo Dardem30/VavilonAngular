@@ -7,6 +7,7 @@ import {Product} from "../../bo/product/Product";
 import {ProductCategory} from "../../bo/product/ProductCategory";
 import {Attachment} from "../../bo/Attachment";
 import {DomSanitizer} from "@angular/platform-browser";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-main',
@@ -56,10 +57,14 @@ export class ProductComponent implements OnInit {
         sanitizer: this.sanitizer,
         productService: this.productService,
         onCloseHandler: function () {
+          AppComponent.showLoadingMask = false;
           scope.searchProducts();
         }
       }
     });
+  }
+  locale() {
+    return AppComponent.locale;
   }
 }
 
@@ -91,6 +96,7 @@ export class ProductDetails {
 
   saveProduct() {
     const scope = this;
+    AppComponent.showLoadingMask = true;
     this.data.productService.save(this.product).subscribe((result: any) => {
       const productId = result.productId;
       const filesForDeleting: Attachment[] = [];
@@ -165,5 +171,8 @@ export class ProductDetails {
         this.productAttachments[attIndex].main = false;
       }
     }
+  }
+  locale() {
+    return AppComponent.locale;
   }
 }

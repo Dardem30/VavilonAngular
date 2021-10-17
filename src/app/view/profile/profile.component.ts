@@ -103,6 +103,9 @@ export class ProfileComponent implements OnInit{
      });
     }
   }
+  locale() {
+    return AppComponent.locale;
+  }
 }
 
 export enum ProfileTabs {

@@ -20,8 +20,8 @@
     <header>
       <img style="width: 55px;height: 55px" [src]="getConversationPhoto(currentConversation)" alt="">
       <div>
-        <h2 *ngIf="currentConversation != null">Chat with {{getConversationNames(currentConversation)}}</h2>
-        <h3>already {{totalMessages}} messages</h3>
+        <h2 *ngIf="currentConversation != null">{{locale().label.chatWith}} {{getConversationNames(currentConversation)}}</h2>
+        <h3>{{locale().label.messages}}: {{totalMessages}}</h3>
       </div>
     </header>
     <ul id="chat" #chat (scroll)="onChatScroll($event)">
@@ -41,7 +41,7 @@
     <footer>
       <textarea placeholder="Type your message" #messageField (keydown.enter)="sendMessage(messageField)"></textarea>
       <button mat-button style="display: block;width: 101.5%; color: #3d3c3a" (click)="sendMessage(messageField)">
-        Send
+        {{locale().label.send}}
       </button>
     </footer>
   </main>

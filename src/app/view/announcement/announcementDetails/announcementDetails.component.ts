@@ -166,11 +166,12 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   }
 
   save() {
+    AppComponent.showLoadingMask = true;
     this.announcement.announcementDate = new Date();
     this.announcementService.save(this.announcement).subscribe(result => {
-      console.log(result);
       this.close();
-    })
+      AppComponent.showLoadingMask = false;
+    });
   }
 
   selectProduct(selectedProduct: ProductOverviewItem, event) {
@@ -230,5 +231,9 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   getModerationTextAsHtml(moderationText) {
     console.log(moderationText.replace('\n', '<br>'));
     return 'Decline cause: ' + moderationText.replace(/\n/g, '<br>');
+  }
+
+  locale() {
+    return AppComponent.locale;
   }
 }

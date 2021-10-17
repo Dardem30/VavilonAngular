@@ -11,20 +11,20 @@
 <div style="width: 100%;display: block">
   <h2 style="padding-left: 15px;margin-right: 10px; display: inline-block">Create Announcement</h2>
   <button mat-raised-button style="margin-right: 10px; display: inline-block" (click)="save()">
-    Save
+    {{locale().label.save}}
   </button>
   <button mat-raised-button mat-dialog-close style="display: inline-block" (click)="close()">
-    Close
+    {{locale().label.close}}
   </button>
 </div>
 <mat-divider></mat-divider>
 <div style="padding: 0 30%">
   <mat-checkbox [(ngModel)]="announcement.readyForReview" style="margin-left: 5px"
-                [checked]="announcement.readyForReview">Ready for review
+                [checked]="announcement.readyForReview">{{locale().label.readyForReview}}
   </mat-checkbox>
   <br>
   <mat-form-field appearance="fill">
-    <mat-label>Moderation status</mat-label>
+    <mat-label>{{locale().label.moderationStatus}}</mat-label>
     <mat-select [(ngModel)]="announcement.moderationStatus.moderationStatusId" disabled>
       <mat-option *ngFor="let moderationStatus of mainComponentInstance.moderationStatuses"
                   [value]="moderationStatus.moderationStatusId">{{moderationStatus.name}}</mat-option>
@@ -32,7 +32,7 @@
   </mat-form-field>
   <p style="color: red;margin-left: 5px" *ngIf="announcement.moderationText != null" [innerHTML]="getModerationTextAsHtml(announcement.moderationText)"></p>
   <mat-form-field appearance="fill">
-    <mat-label>[Select contacts]</mat-label>
+    <mat-label>{{locale().label.selectContacts}}</mat-label>
     <mat-select multiple [(ngModel)]="announcement.contacts">
       <mat-option *ngFor="let contact of contacts" [value]="contact">{{contact.name}}</mat-option>
     </mat-select>
@@ -40,7 +40,7 @@
   <mat-icon (click)="openContactDetails()" style="cursor: pointer">add_box</mat-icon>
   <br>
   <mat-form-field appearance="fill">
-    <mat-label>[Select announcement type]</mat-label>
+    <mat-label>{{locale().label.selectAnnouncementType}}</mat-label>
     <mat-select [(ngModel)]="announcement.announcementType.announcementTypeId">
       <mat-option *ngFor="let announcementType of announcementTypes"
                   [value]="announcementType.announcementTypeId">{{announcementType.name}}</mat-option>
@@ -48,14 +48,14 @@
   </mat-form-field>
   <br>
   <mat-form-field appearance="fill">
-    <mat-label>[Select measure]</mat-label>
+    <mat-label>{{locale().label.selectMeasure}}</mat-label>
     <mat-select [(ngModel)]="announcement.measure.measureCode">
       <mat-option *ngFor="let measure of measures" [value]="measure.measureCode">{{measure.name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <br>
   <button mat-raised-button style="display: inline-block" (click)="openProductDetails(null)">
-    Add product
+    {{locale().label.addProduct}}
   </button>
   <div
     style="width: 100%;overflow-x: scroll; overflow-y: hidden;white-space: nowrap;max-height: 650px;position: relative;display: block">
@@ -69,23 +69,23 @@
            style="max-height: 350px; max-width: 465px">
       <mat-card-content>
         <p>
-          Описание: {{product.description}}
+          {{locale().label.description}}: {{product.description}}
         </p>
       </mat-card-content>
       <mat-card-actions>
         <button mat-button (click)="openProductDetails(product.productId)">EDIT</button>
         <mat-checkbox (change)="selectProduct(product, $event)" [(ngModel)]="product.selectedForAnnouncement"
-                      [checked]="product.selectedForAnnouncement">Select
+                      [checked]="product.selectedForAnnouncement">{{locale().label.select}}
         </mat-checkbox>
       </mat-card-actions>
     </mat-card>
   </div>
   <mat-form-field appearance="fill" style="width: 20%">
-    <mat-label>Price</mat-label>
+    <mat-label>{{locale().label.price}}</mat-label>
     <input matInput [(ngModel)]="announcement.price" type="number">
   </mat-form-field>
   <mat-form-field appearance="fill" style="width: 40%; margin-left: 10px">
-    <mat-label>[Select currency sign]</mat-label>
+    <mat-label>{{locale().label.selectCurrencySign}}</mat-label>
     <mat-select [(ngModel)]="announcement.currencySign">
       <mat-option *ngFor="let currency of getCurrencySigns()"
                   [value]="currency" [innerHTML]="currency"></mat-option>
@@ -93,11 +93,11 @@
   </mat-form-field>
   <br>
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>Description</mat-label>
+    <mat-label>{{locale().label.description}}</mat-label>
     <textarea matInput style="height: 200px" [(ngModel)]="announcement.text"></textarea>
   </mat-form-field>
 </div>
-<h2 style="padding-left: 15px">Mark territory for delivery</h2>
+<h2 style="padding-left: 15px">{{locale().label.markTerritoryForDelivery}}</h2>
 <mat-divider style="margin-bottom: 10px"></mat-divider>
 
 <div id="map" style="margin-bottom: 10px"></div>

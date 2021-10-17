@@ -49,4 +49,7 @@ export class AnnouncementComponent implements OnInit {
       announcementId: announcementId
     }, false);
   }
+  locale() {
+    return AppComponent.locale;
+  }
 }

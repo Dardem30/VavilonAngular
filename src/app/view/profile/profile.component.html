@@ -13,7 +13,6 @@
 
         <div class="name">
           <h2>{{userProfileInfo.username}}</h2>
-          <span>ИП</span>
         </div>
       </div>
 
@@ -34,7 +33,7 @@
       <div *ngIf="activeTab == tabs.HOME">
         <div class="main-title">
           <mat-form-field appearance="fill" (focusout)="saveInfo()" style="width: 100%">
-            <mat-label>Info</mat-label>
+            <mat-label>{{locale().label.info}}</mat-label>
             <textarea style="min-height: 200px" matInput [(ngModel)]="userProfileInfo.info"
                       *ngIf="getCurrentUserInfo().loggedIn ? getCurrentUserInfo().userId == userId : false"></textarea>
             <textarea style="min-height: 200px" matInput [(ngModel)]="userProfileInfo.info"
@@ -44,15 +43,15 @@
         </div>
         <div class="main">
           <div class="card">
-            <p>Comments</p>
+            <p>{{locale().label.comments}}</p>
             <p class="num">{{userProfileInfo.countComments}}</p>
           </div>
           <div class="card bg-dark">
-            <p>Average rate</p>
+            <p>{{locale().label.averageRate}}</p>
             <p class="num">{{userProfileInfo.averageRate == null ? 0 : userProfileInfo.averageRate}}</p>
           </div>
           <div class="card">
-            <p>Announcements</p>
+            <p>{{locale().label.announcements}}</p>
             <p class="num">{{userProfileInfo.countAnnouncements}}</p>
           </div>
         </div>
@@ -72,16 +71,16 @@
               <mat-card-content>
                 <h2>{{announcement.productName}}</h2>
                 <p>
-                  Описание: {{announcement.text}}
+                  {{locale().label.description}}: {{announcement.text}}
                 </p>
                 <p>
-                  Цена: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
-                  Объем: {{announcement.measure}}<br>
-                  Статус модерации: {{announcement.moderationStatusName}}<br>
+                  {{locale().label.price}}: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
+                  {{locale().label.volume}}: {{announcement.measure}}<br>
+                  {{locale().label.moderationStatus}}: {{announcement.moderationStatusName}}<br>
                 </p>
               </mat-card-content>
               <mat-card-actions>
-                <button mat-button (click)="viewAnnouncement(announcement)">MORE</button>
+                <button mat-button (click)="viewAnnouncement(announcement)">{{locale().label.more}}</button>
               </mat-card-actions>
             </mat-card>
           </mat-grid-tile>

@@ -2,10 +2,10 @@
   <table>
     <thead>
     <tr>
-      <th style="width: 20%">Name</th>
-      <th style="width: 20%">Action</th>
-      <th style="width: 20%">User Type</th>
-      <th style="width: 40%">Description</th>
+      <th style="width: 20%">{{locale().label.name}}</th>
+      <th style="width: 20%">{{locale().label.action}}</th>
+      <th style="width: 20%">{{locale().label.userType}}</th>
+      <th style="width: 40%">{{locale().label.description}}</th>
     </tr>
     </thead>
     <tbody *ngFor="let userCard of userCards">
@@ -20,9 +20,9 @@
 </div>
 <mat-toolbar class="mat-paginator-sticky">
   <button mat-raised-button style="margin-right: 20px" (click)="openUserCardDetails(null)">
-    Add card
+    {{locale().label.addCard}}
   </button>
   <button mat-raised-button>
-    Delete selected cards
+    {{locale().label.deleteSelectedCards}}
   </button>
 </mat-toolbar>

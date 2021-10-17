@@ -45,6 +45,7 @@ import {ApproveAnnouncementOverviewComponent} from "./view/approveAnnouncementOv
 import {NgxMaterialRatingModule} from "ngx-material-rating";
 import {ProfileComponent} from "./view/profile/profile.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 const routes: Routes = [
   {path: '*', component: MainComponent},
@@ -97,7 +98,8 @@ const routes: Routes = [
     MatSelectModule,
     MatCheckboxModule,
     NgxMaterialRatingModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressSpinnerModule
   ],
   providers: [AnnouncementService, SecurityService, UserCardService, ProductService, ContactService, MessageService],
   bootstrap: [AppComponent]

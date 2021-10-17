@@ -12,16 +12,16 @@
       <mat-card-content>
         <h2>{{announcement.productName}}</h2>
         <p>
-          Описание: {{announcement.text}}
+          {{locale().label.description}}: {{announcement.text}}
         </p>
         <p>
-          Цена: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
-          Объем: {{announcement.measure}}<br>
-          Статус модерации: {{announcement.moderationStatusName}}<br>
+          {{locale().label.price}}: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
+          {{locale().label.volume}}: {{announcement.measure}}<br>
+          {{locale().label.moderationStatus}}: {{announcement.moderationStatusName}}<br>
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button (click)="openAnnouncementDetails(announcement.announcementId)">EDIT</button>
+        <button mat-button (click)="openAnnouncementDetails(announcement.announcementId)">{{locale().label.edit}}</button>
       </mat-card-actions>
     </mat-card>
   </mat-grid-tile>
@@ -29,10 +29,10 @@
 <mat-toolbar class="mat-paginator-sticky">
   <mat-toolbar-row>
     <button mat-raised-button style="width: 220px;margin-right: 10px" (click)="openAnnouncementDetails(null)">
-      Add announcement
+      {{locale().label.addAnnouncement}}
     </button>
     <button mat-raised-button style="width: 290px">
-      Delete selected announcements
+      {{locale().label.deleteSelectedAnnouncements}}
     </button>
     <mat-paginator [length]="this.announcementSearchForm.total" aria-label="Select page" #paginator (page)="pageChanged()"
                    style="position: sticky; bottom: 0; width: 100%; background-color: #f0f0f0"></mat-paginator>

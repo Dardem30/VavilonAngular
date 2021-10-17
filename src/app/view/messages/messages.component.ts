@@ -149,4 +149,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       });
     }
   }
+  locale() {
+    return AppComponent.locale;
+  }
 }

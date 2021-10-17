@@ -5,6 +5,7 @@ import {ActionType} from "../../bo/enums/ActionType";
 import {UserCard} from "../../bo/userCard/UserCard";
 import {UserCardService} from "../../services/UserCardService";
 import {UserCardLight} from "../../bo/userCard/UserCardLight";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-main',
@@ -36,6 +37,9 @@ export class UserCardComponent implements OnInit {
         }
       }
     });
+  }
+  locale() {
+    return AppComponent.locale;
   }
 }
 
@@ -72,5 +76,8 @@ export class UserCardDetails {
       this.data.onCloseHandler();
     });
     this.userCardCloseButton.nativeElement.click();
+  }
+  locale() {
+    return AppComponent.locale;
   }
 }

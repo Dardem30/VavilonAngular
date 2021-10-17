@@ -123,14 +123,19 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    let locale: any = localStorage.getItem('locale');
     const scope = this;
-    AppComponent.updateLocaleFn = function (selectedLocale) {
-      for (let lang of scope.langs) {
-        if (lang.locale == selectedLocale) {
-          scope.selectedLanguage = lang;
-          break;
+    if (locale == null) {
+      AppComponent.updateLocaleFn = function (selectedLocale) {
+        for (let lang of scope.langs) {
+          if (lang.locale == selectedLocale) {
+            scope.selectedLanguage = lang;
+            break;
+          }
         }
       }
+    } else {
+      this.updateLocale(locale);
     }
     AppComponent.onReceivingProfileInfo = function () {
       scope.initializeWebSocketConnection();
@@ -670,6 +675,15 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
   locale() {
     return AppComponent.locale;
+  }
+
+  private updateLocale(locale: any) {
+    if (locale == '0') {
+      this.selectedLanguage = this.langs[0];
+    } else {
+      this.selectedLanguage = this.langs[1];
+    }
+    this.changeLocale();
   }
 }
 

@@ -1,1 +1,5 @@
-<router-outlet></router-outlet>
+<div class="overlay" *ngIf="isShowLoadingMask()">
+    <mat-spinner style="color: red;margin-top: 350px; margin-left: 50%"></mat-spinner>
+</div>
+
+<router-outlet [class.blurred]="true"></router-outlet>

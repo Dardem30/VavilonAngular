@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {Contact} from "../../bo/contact/Contact";
 import {ContactService} from "../../services/ContactService";
 import {ContactType} from "../../bo/contact/ContactType";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-main',
@@ -38,6 +39,10 @@ export class ContactComponent implements OnInit {
       }
     });
   }
+
+  locale() {
+    return AppComponent.locale;
+  }
 }
 
 @Component({
@@ -63,5 +68,9 @@ export class ContactDetails {
       this.data.onCloseHandler();
     });
     this.contactCloseButton.nativeElement.click();
+  }
+
+  locale() {
+    return AppComponent.locale;
   }
 }

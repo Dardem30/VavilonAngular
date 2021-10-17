@@ -9,11 +9,11 @@
            style="max-height: 350px; max-width: 465px">
       <mat-card-content>
         <p>
-          Описание: {{product.description}}
+          {{locale().label.description}}: {{product.description}}
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button (click)="openProductDetails(product.productId)">EDIT</button>
+        <button mat-button (click)="openProductDetails(product.productId)">{{locale().label.edit}}</button>
       </mat-card-actions>
     </mat-card>
   </mat-grid-tile>
@@ -21,10 +21,10 @@
 <mat-toolbar class="mat-paginator-sticky">
   <mat-toolbar-row>
     <button mat-raised-button style="width: 150px;margin-right: 10px" (click)="openProductDetails(null)">
-      Add product
+      {{locale().label.addProduct}}
     </button>
     <button mat-raised-button style="width: 230px">
-      Delete selected products
+      {{locale().label.deleteSelectedProducts}}
     </button>
     <mat-paginator [length]="this.productsSearchForm.total"  aria-label="Select page" #paginator (page)="pageChanged()"
                    style="position: sticky; bottom: 0; width: 100%; background-color: #f0f0f0"></mat-paginator>

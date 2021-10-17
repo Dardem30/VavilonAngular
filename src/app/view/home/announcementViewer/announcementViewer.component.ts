@@ -233,4 +233,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
       }
     }, false);
   }
+  locale() {
+    return AppComponent.locale;
+  }
 }

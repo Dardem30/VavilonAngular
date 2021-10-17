@@ -65,17 +65,17 @@
   }
 </style>
 <div style="width: 100%;display: inline-block">
-  <h2 style="padding-left: 15px;margin-right: 10px; display: inline-block">Announcement</h2>
+  <h2 style="padding-left: 15px;margin-right: 10px; display: inline-block">{{locale().label.announcement}}</h2>
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="close()">
-    Close
+    {{locale().label.close}}
   </button>
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block"
           (click)="sellerProfile(announcement.user.userId)">
-    Seller profile
+    {{locale().label.sellerProfile}}
   </button>
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="chat()"
           *ngIf="getProfileInfo().loggedIn">
-    Chat
+    {{locale().label.chat}}
   </button>
   <ngx-material-rating [(ngModel)]="announcement.rating" [max]="5"
                        *ngIf="getProfileInfo() == null || announcement.user == null || announcement.user.userId != getProfileInfo().userId"
@@ -84,14 +84,14 @@
   <div style="float: right" *ngIf="getProfileInfo().role === 'ADMIN'">
     <mat-form-field appearance="fill"
                     style="margin-right: 10px; display: inline-block; width: 200px">
-      <mat-label>[Select moderation status]</mat-label>
+      <mat-label>{{locale().label.selectModerationStatus}}</mat-label>
       <mat-select [(ngModel)]="announcement.moderationStatus.moderationStatusId">
         <mat-option *ngFor="let moderationStatus of mainComponentInstance.moderationStatuses"
                     [value]="moderationStatus.moderationStatusId">{{moderationStatus.name}}</mat-option>
       </mat-select>
     </mat-form-field>
     <button mat-raised-button mat-dialog-close style="display: inline-block" (click)="updateModerationStatus()">
-      Update moderation status
+      {{locale().label.updateModerationStatus}}
     </button>
   </div>
 </div>
@@ -104,13 +104,13 @@
       <mat-card-title>{{contact.name}}</mat-card-title>
       <mat-card-subtitle>{{contact.value}}</mat-card-subtitle>
       <mat-card-actions>
-        <button mat-button>COPY</button>
+        <button mat-button>{{locale().label.copy}}</button>
       </mat-card-actions>
     </mat-card>
   </div>
   <br>
   <mat-form-field appearance="fill">
-    <mat-label>[Select announcement type]</mat-label>
+    <mat-label>{{locale().label.selectAnnouncementType}}</mat-label>
     <mat-select [(ngModel)]="announcement.announcementType.announcementTypeId">
       <mat-option *ngFor="let announcementType of announcementTypes"
                   [value]="announcementType.announcementTypeId" disabled>{{announcementType.name}}</mat-option>
@@ -118,7 +118,7 @@
   </mat-form-field>
   <br>
   <mat-form-field appearance="fill">
-    <mat-label>[Select measure]</mat-label>
+    <mat-label>{{locale().label.selectMeasure}}</mat-label>
     <mat-select [(ngModel)]="announcement.measure.measureCode">
       <mat-option *ngFor="let measure of measures" [value]="measure.measureCode"
                   disabled>{{measure.name}}</mat-option>
@@ -126,11 +126,11 @@
   </mat-form-field>
   <br>
   <mat-form-field appearance="fill" style="width: 20%">
-    <mat-label>Price</mat-label>
+    <mat-label>{{locale().label.price}}</mat-label>
     <input matInput [(ngModel)]="announcement.price" type="number" readonly>
   </mat-form-field>
   <mat-form-field appearance="fill" style="width: 40%; margin-left: 10px" class="readonly-wrapper">
-    <mat-label>Currency sign</mat-label>
+    <mat-label>{{locale().label.currencySign}}</mat-label>
     <mat-select [(ngModel)]="announcement.currencySign">
       <mat-option *ngFor="let currency of getCurrencySigns()"
                   [value]="currency" [innerHTML]="currency" disabled></mat-option>
@@ -158,23 +158,23 @@
 
   <br>
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>Description</mat-label>
+    <mat-label>{{locale().label.description}}</mat-label>
     <textarea matInput style="height: 200px" [(ngModel)]="announcement.text" readonly></textarea>
   </mat-form-field>
 </div>
-<h2 style="padding-left: 15px">Territory for delivery</h2>
+<h2 style="padding-left: 15px">{{locale().label.territoryForDelivery}}</h2>
 <mat-divider style="margin-bottom: 10px"></mat-divider>
 
 <div id="map" style="margin-bottom: 10px"></div>
 <mat-divider style="margin-bottom: 10px"></mat-divider>
 <div style="padding: 0 30%">
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>Comment</mat-label>
+    <mat-label>{{locale().label.comment}}</mat-label>
     <textarea matInput style="height: 200px" [(ngModel)]="commentText"></textarea>
   </mat-form-field>
   <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block"
           (click)="submitComment(null)">
-    Submit
+    {{locale().label.submit}}
   </button>
   <mat-divider style="margin-bottom: 10px"></mat-divider>
   <!-- Comment 1 start -->
@@ -200,7 +200,7 @@
         </p>
       </div>
       <span style="flex: 1 1 auto;"></span>
-      <p style="margin-top: 15px; padding-right: 10px" *ngIf="comment.rate != null">Rated:</p>
+      <p style="margin-top: 15px; padding-right: 10px" *ngIf="comment.rate != null">{{locale().label.rated}}:</p>
       <ngx-material-rating [(ngModel)]="comment.rate" [max]="5" [dense]="true" *ngIf="comment.rate != null"
                            [matTooltip]="comment.rate"></ngx-material-rating>
     </div>
@@ -209,15 +209,15 @@
       <p>
         {{comment.text}}
       </p>
-      <button type="button" (click)="comment.showReplyDialog = !comment.showReplyDialog">Reply</button>
+      <button type="button" (click)="comment.showReplyDialog = !comment.showReplyDialog">{{locale().label.reply}}</button>
       <div *ngIf="comment.showReplyDialog">
         <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label>Comment</mat-label>
+          <mat-label>{{locale().label.comment}}</mat-label>
           <textarea matInput style="height: 200px" [(ngModel)]="commentText"></textarea>
         </mat-form-field>
         <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block"
                 (click)="submitComment(comment)">
-          Submit
+          {{locale().label.submit}}
         </button>
       </div>
     </div>
@@ -251,7 +251,7 @@
               </p>
             </div>
             <span style="flex: 1 1 auto;"></span>
-            <p style="padding-top: 15px; padding-right: 10px" *ngIf="childComment.rate != null">Rated:</p>
+            <p style="padding-top: 15px; padding-right: 10px" *ngIf="childComment.rate != null">{{locale().label.rated}}:</p>
             <ngx-material-rating [(ngModel)]="childComment.rate" [max]="5" [dense]="true"
                                  *ngIf="childComment.rate != null"
                                  [matTooltip]="childComment.rate"></ngx-material-rating>
@@ -261,7 +261,7 @@
             <p>
               {{childComment.text}}
             </p>
-            <button type="button" (click)="childComment.showReplyDialog = !childComment.showReplyDialog">Reply
+            <button type="button" (click)="childComment.showReplyDialog = !childComment.showReplyDialog">{{locale().label.reply}}
             </button>
             <div *ngIf="childComment.showReplyDialog">
               <mat-form-field appearance="fill" style="width: 100%">
@@ -270,7 +270,7 @@
               </mat-form-field>
               <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block"
                       (click)="submitComment(childComment)">
-                Submit
+                {{locale().label.submit}}
               </button>
             </div>
           </div>

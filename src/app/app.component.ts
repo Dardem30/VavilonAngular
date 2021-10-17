@@ -31,6 +31,7 @@ export class AppComponent {
   };
   public static currencySigns: string[] = ["&dollar;", "&euro;", "&#8381;"];
   public static locale = enLocalization;
+  public static showLoadingMask = false;
   public static selectedLocale = Locale.EN;
   public static updateLocaleFn = function (locale) {};
   public static onReceivingProfileInfo = function () {};
@@ -54,17 +55,20 @@ export class AppComponent {
     }, error => {
       console.log('Unautherized')
     });
-    this.http.get('http://ip-api.com/json').subscribe((result: {country:string}) => {
-      const country = result.country;
-      if (country == 'Belarus' || country == 'Russia' || country == 'Ukraine') {
-        AppComponent.locale = ruLocalization;
-        AppComponent.selectedLocale = Locale.RU;
-      } else {
-        AppComponent.locale = enLocalization;
-        AppComponent.selectedLocale = Locale.EN;
-      }
-      AppComponent.updateLocaleFn(AppComponent.selectedLocale);
-    })
+    let locale: any = localStorage.getItem('locale');
+    if (locale == null) {
+      this.http.get('http://ip-api.com/json').subscribe((result: {country:string}) => {
+        const country = result.country;
+        if (country == 'Belarus' || country == 'Russia' || country == 'Ukraine') {
+          AppComponent.locale = ruLocalization;
+          AppComponent.selectedLocale = Locale.RU;
+        } else {
+          AppComponent.locale = enLocalization;
+          AppComponent.selectedLocale = Locale.EN;
+        }
+        AppComponent.updateLocaleFn(AppComponent.selectedLocale);
+      })
+    }
   }
   static logout() {
     AppComponent.profileInfo = {
@@ -80,6 +84,7 @@ export class AppComponent {
     }
   }
   static switchLocale(locale: Locale) {
+    localStorage.setItem('locale', locale + '');
     switch (locale) {
       case Locale.EN:
         AppComponent.locale = enLocalization;
@@ -90,5 +95,9 @@ export class AppComponent {
         AppComponent.selectedLocale = Locale.RU;
         break
     }
+  }
+
+  isShowLoadingMask() {
+    return AppComponent.showLoadingMask;
   }
 }

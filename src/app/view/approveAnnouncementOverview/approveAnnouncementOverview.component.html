@@ -12,11 +12,11 @@
       <mat-card-content>
         <h2>{{announcement.productName}}</h2>
         <p>
-          Описание: {{announcement.text}}
+          {{locale().label.description}}: {{announcement.text}}
         </p>
         <p>
-          Цена: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
-          Объем: {{announcement.measure}}<br>
+          {{locale().label.price}}: {{announcement.price}} <span [innerHTML]="announcement.currencySign"></span><br>
+          {{locale().label.volume}}: {{announcement.measure}}<br>
         </p>
       </mat-card-content>
       <mat-card-actions>
