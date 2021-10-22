@@ -35,14 +35,14 @@
 </style>
 <h2>{{locale().label.userCardDetails}}</h2>
 <mat-divider style="margin-bottom: 10px"></mat-divider>
-<mat-form-field appearance="fill">
+<mat-form-field appearance="fill" [formGroup]="userCardForm">
   <mat-label>{{locale().label.cardName}}</mat-label>
-  <input matInput [(ngModel)]="userCard.name" required>
+  <input matInput [(ngModel)]="userCard.name" formControlName="name" required>
 </mat-form-field>
 <br>
 <div>
   <label>{{locale().label.actionType}}: </label>
-  <mat-radio-group [(ngModel)]="userCard.actionType" >
+  <mat-radio-group [(ngModel)]="userCard.actionType">
     <mat-radio-button [value]="actionTypes.BUYER">Buyer</mat-radio-button>
     <mat-radio-button [value]="actionTypes.SELLER">Seller</mat-radio-button>
   </mat-radio-group>

@@ -5,4 +5,5 @@ export class Contact {
   name: any;
   value: any;
   contactType: ContactType = new ContactType();
+  checked: boolean = false;
 }

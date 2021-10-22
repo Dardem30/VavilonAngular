@@ -8,6 +8,8 @@ import {ProductCategory} from "../../bo/product/ProductCategory";
 import {Attachment} from "../../bo/Attachment";
 import {DomSanitizer} from "@angular/platform-browser";
 import {AppComponent} from "../../app.component";
+import Swal from "sweetalert2";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-main',
@@ -16,6 +18,7 @@ import {AppComponent} from "../../app.component";
 })
 export class ProductComponent implements OnInit {
   products: ProductOverviewItem[] = [];
+  selectedProducts: number[] = [];
   @ViewChild('paginator') paginator: MatPaginator;
   productsSearchForm: any = {
     start: 0,
@@ -36,6 +39,11 @@ export class ProductComponent implements OnInit {
   searchProducts() {
     this.productService.search(this.productsSearchForm).subscribe(result => {
       this.products = result.result;
+      for (let product of this.products) {
+        if (this.selectedProducts.indexOf(product.productId) != -1) {
+          product.checked = true;
+        }
+      }
       this.productsSearchForm.total = result.total;
     });
   }
@@ -66,17 +74,56 @@ export class ProductComponent implements OnInit {
   locale() {
     return AppComponent.locale;
   }
+
+  selectProduct(product: ProductOverviewItem, event) {
+    if (!event.checked) {
+      product.checked = false;
+      const arr = [];
+      for (let selectedProductId of this.selectedProducts) {
+        if (selectedProductId != product.productId) {
+          arr.push(selectedProductId);
+        }
+      }
+      this.selectedProducts = arr;
+    } else {
+      product.checked = true;
+      this.selectedProducts.push(product.productId);
+    }
+  }
+  deleteSelectedProducts() {
+    Swal.fire({
+      icon: 'warning',
+      text: this.locale().label.msgAreYouSureYouWantToDeleteSelectedProducts,
+      showCancelButton: true,
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productService.deleteProducts(this.selectedProducts).subscribe(result => {
+          this.selectedProducts = [];
+          this.searchProducts();
+        });
+      }
+    })
+  }
 }
 
 @Component({
   selector: 'user-card-details',
   templateUrl: 'product.details.html',
 })
-export class ProductDetails {
+export class ProductDetails implements OnInit{
   @ViewChild("productCloseButton", {read: ElementRef}) productCloseButton: ElementRef;
   product: Product = new Product();
   productCategories: ProductCategory[] = [];
   productAttachments: Attachment[] = [];
+  productForm;
+
+  ngOnInit(): void {
+    this.productForm = new FormGroup({
+      name: new FormControl(this.product.name, [Validators.required]),
+      productCategoryId: new FormControl(this.product.productCategory.productCategoryId, [Validators.required])
+    });
+  }
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     data.productService.readProductCategories().subscribe((result: ProductCategory[]) => {
@@ -95,6 +142,18 @@ export class ProductDetails {
   }
 
   saveProduct() {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
+    if (this.productAttachments.length == 0) {
+      Swal.fire({
+        title: 'Attachments are missing',
+        icon: 'warning',
+        text: "Please upload at least one image"
+      })
+      return;
+    }
     const scope = this;
     AppComponent.showLoadingMask = true;
     this.data.productService.save(this.product).subscribe((result: any) => {
@@ -158,6 +217,7 @@ export class ProductDetails {
           attachment.delete = false;
           attachment.fileItem = file;
           attachment.fileSrc = reader.result as string;
+          attachment.main = this.productAttachments.length == 0;
           this.productAttachments.push(attachment)
         }
         reader.readAsDataURL(file);

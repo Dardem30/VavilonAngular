@@ -7,4 +7,5 @@ export class UserCardLight {
   description: string;
   actionType: ActionType;
   userType: UserType;
+  checked: boolean = false;
 }

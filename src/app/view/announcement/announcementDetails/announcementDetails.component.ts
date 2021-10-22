@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MapLoaderService} from "../../../services/MapLoaderService";
 import {ContactService} from "../../../services/ContactService";
 import {Contact} from "../../../bo/contact/Contact";
@@ -18,6 +18,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {ProductDetails} from "../../product/product.component";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ModerationStatus} from "../../../bo/announcement/ModerationStatus";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import Swal from "sweetalert2";
 
 declare const google: any;
 
@@ -26,7 +28,7 @@ declare const google: any;
   templateUrl: './announcementDetails.component.html',
   styleUrls: ['./announcementDetails.component.css']
 })
-export class AnnouncementDetailsComponent implements AfterViewInit {
+export class AnnouncementDetailsComponent implements AfterViewInit, OnInit {
   announcementId;
   map: any;
   drawingManager: any;
@@ -45,6 +47,18 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
       direction: "DESC"
     }
   };
+  announcementForm;
+
+  ngOnInit(): void {
+    this.announcementForm = new FormGroup({
+      contacts: new FormControl(this.announcement.contacts, [Validators.required]),
+      announcementTypeId: new FormControl(this.announcement.announcementType.announcementTypeId, [Validators.required]),
+      text: new FormControl(this.announcement.text, [Validators.required]),
+      currencySign: new FormControl(this.announcement.currencySign, [Validators.required]),
+      price: new FormControl(this.announcement.price, [Validators.required]),
+      measureCode: new FormControl(this.announcement.measure.measureCode, [Validators.required]),
+    });
+  }
 
   constructor(
     private contactService: ContactService,
@@ -166,12 +180,24 @@ export class AnnouncementDetailsComponent implements AfterViewInit {
   }
 
   save() {
-    AppComponent.showLoadingMask = true;
-    this.announcement.announcementDate = new Date();
-    this.announcementService.save(this.announcement).subscribe(result => {
-      this.close();
-      AppComponent.showLoadingMask = false;
-    });
+    if (this.announcementForm.invalid) {
+      this.announcementForm.markAllAsTouched();
+      return;
+    }
+    if (this.announcement.product == null) {
+      Swal.fire({
+        title: 'Product is missing',
+        icon: 'warning',
+        text: "Please select or create a product"
+      })
+      return;
+    }
+    // AppComponent.showLoadingMask = true;
+    // this.announcement.announcementDate = new Date();
+    // this.announcementService.save(this.announcement).subscribe(result => {
+    //   this.close();
+    //   AppComponent.showLoadingMask = false;
+    // });
   }
 
   selectProduct(selectedProduct: ProductOverviewItem, event) {

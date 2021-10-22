@@ -80,4 +80,10 @@ export class AnnouncementService {
       withCredentials: true
     });
   }
+
+  deleteAnnouncements(selectedAnnouncements: number[]) {
+    return this.http.delete(AppComponent.apiEndpoint + 'announcement/deleteAnnouncements?ids=' + selectedAnnouncements.join(','), {
+      withCredentials: true
+    })
+  }
 }

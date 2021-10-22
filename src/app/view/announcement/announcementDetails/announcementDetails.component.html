@@ -31,25 +31,25 @@
     </mat-select>
   </mat-form-field>
   <p style="color: red;margin-left: 5px" *ngIf="announcement.moderationText != null" [innerHTML]="getModerationTextAsHtml(announcement.moderationText)"></p>
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" [formGroup]="announcementForm">
     <mat-label>{{locale().label.selectContacts}}</mat-label>
-    <mat-select multiple [(ngModel)]="announcement.contacts">
+    <mat-select multiple [(ngModel)]="announcement.contacts" required formControlName="contacts">
       <mat-option *ngFor="let contact of contacts" [value]="contact">{{contact.name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-icon (click)="openContactDetails()" style="cursor: pointer">add_box</mat-icon>
   <br>
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" [formGroup]="announcementForm">
     <mat-label>{{locale().label.selectAnnouncementType}}</mat-label>
-    <mat-select [(ngModel)]="announcement.announcementType.announcementTypeId">
+    <mat-select [(ngModel)]="announcement.announcementType.announcementTypeId" required formControlName="announcementTypeId">
       <mat-option *ngFor="let announcementType of announcementTypes"
                   [value]="announcementType.announcementTypeId">{{announcementType.name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <br>
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" [formGroup]="announcementForm">
     <mat-label>{{locale().label.selectMeasure}}</mat-label>
-    <mat-select [(ngModel)]="announcement.measure.measureCode">
+    <mat-select [(ngModel)]="announcement.measure.measureCode" required formControlName="measureCode">
       <mat-option *ngFor="let measure of measures" [value]="measure.measureCode">{{measure.name}}</mat-option>
     </mat-select>
   </mat-form-field>
@@ -80,21 +80,21 @@
       </mat-card-actions>
     </mat-card>
   </div>
-  <mat-form-field appearance="fill" style="width: 20%">
+  <mat-form-field appearance="fill" style="width: 20%" [formGroup]="announcementForm">
     <mat-label>{{locale().label.price}}</mat-label>
-    <input matInput [(ngModel)]="announcement.price" type="number">
+    <input matInput [(ngModel)]="announcement.price" type="number" required formControlName="price">
   </mat-form-field>
-  <mat-form-field appearance="fill" style="width: 40%; margin-left: 10px">
+  <mat-form-field appearance="fill" style="width: 40%; margin-left: 10px" [formGroup]="announcementForm">
     <mat-label>{{locale().label.selectCurrencySign}}</mat-label>
-    <mat-select [(ngModel)]="announcement.currencySign">
+    <mat-select [(ngModel)]="announcement.currencySign" required formControlName="currencySign">
       <mat-option *ngFor="let currency of getCurrencySigns()"
                   [value]="currency" [innerHTML]="currency"></mat-option>
     </mat-select>
   </mat-form-field>
   <br>
-  <mat-form-field appearance="fill" style="width: 100%">
+  <mat-form-field appearance="fill" style="width: 100%" [formGroup]="announcementForm">
     <mat-label>{{locale().label.description}}</mat-label>
-    <textarea matInput style="height: 200px" [(ngModel)]="announcement.text"></textarea>
+    <textarea matInput style="height: 200px" [(ngModel)]="announcement.text" required formControlName="text"></textarea>
   </mat-form-field>
 </div>
 <h2 style="padding-left: 15px">{{locale().label.markTerritoryForDelivery}}</h2>

@@ -92,5 +92,9 @@ export const label = {
   userCardDetails: 'User card details',
   cardName: 'Card name',
   actionType: 'Action type',
-  inn: 'INN'
+  inn: 'INN',
+  msgAreYouSureYouWantToDeleteSelectedAnnouncements: 'Are you sure you want to delete selected announcements?',
+  msgAreYouSureYouWantToDeleteSelectedContacts: 'Are you sure you want to delete selected contacts?',
+  msgAreYouSureYouWantToDeleteSelectedProducts: 'Are you sure you want to delete selected products?<br>NOTE: it will also delete announcements with selected products!',
+  msgAreYouSureYouWantToDeleteSelectedCards: 'Are you sure you want to delete selected cards?'
 }

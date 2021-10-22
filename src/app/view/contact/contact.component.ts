@@ -4,6 +4,7 @@ import {Contact} from "../../bo/contact/Contact";
 import {ContactService} from "../../services/ContactService";
 import {ContactType} from "../../bo/contact/ContactType";
 import {AppComponent} from "../../app.component";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-main',
@@ -12,6 +13,7 @@ import {AppComponent} from "../../app.component";
 })
 export class ContactComponent implements OnInit {
   contacts: Contact[] = [];
+  selectedContacts: number[] = [];
 
   constructor(private contactService: ContactService,
               private dialog: MatDialog) {
@@ -42,6 +44,39 @@ export class ContactComponent implements OnInit {
 
   locale() {
     return AppComponent.locale;
+  }
+
+  selectContact(contact: Contact, event) {
+    if (!event.checked) {
+      contact.checked = false;
+      const arr = [];
+      for (let contactId of this.selectedContacts) {
+        if (contactId != contact.contactId) {
+          arr.push(contactId);
+        }
+      }
+      this.selectedContacts = arr;
+    } else {
+      contact.checked = true;
+      this.selectedContacts.push(contact.contactId);
+    }
+  }
+  deleteSelectedContacts() {
+    Swal.fire({
+      icon: 'warning',
+      text: this.locale().label.msgAreYouSureYouWantToDeleteSelectedContacts,
+      showCancelButton: true,
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.contactService.deleteContacts(this.selectedContacts).subscribe(result => {
+          this.selectedContacts = [];
+          this.contactService.getContacts().subscribe(contacts => {
+            this.contacts = contacts
+          })
+        });
+      }
+    })
   }
 }
 

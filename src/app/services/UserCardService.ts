@@ -29,4 +29,10 @@ export class UserCardService {
       withCredentials: true
     });
   }
+
+  deleteCards(selectedCards: number[]) {
+    return this.http.delete(AppComponent.apiEndpoint + 'userCard/deleteUserCards?ids=' + selectedCards.join(','), {
+      withCredentials: true
+    })
+  }
 }

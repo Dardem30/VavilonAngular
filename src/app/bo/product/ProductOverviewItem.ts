@@ -5,4 +5,5 @@ export class ProductOverviewItem {
   category: string;
   image: string;
   selectedForAnnouncement: boolean = false;
+  checked: boolean = false;
 }

@@ -92,5 +92,9 @@ export const label = {
   userCardDetails: 'Информация о карточке',
   cardName: 'Имя карточки',
   actionType: 'Тип действий',
-  inn: 'ИНН'
+  inn: 'ИНН',
+  msgAreYouSureYouWantToDeleteSelectedAnnouncements: 'Вы уверены что вы хотите удалить выбранные объявления?',
+  msgAreYouSureYouWantToDeleteSelectedContacts: 'Вы уверены что вы хотите удалить выбранные контакты?',
+  msgAreYouSureYouWantToDeleteSelectedProducts: 'Вы уверены что вы хотите удалить выбранные продукты?<br>ВНИМАНИЕ: Объявления с выбранными продуктами так же будут удалены!',
+  msgAreYouSureYouWantToDeleteSelectedCards: 'Вы уверены что вы хотите удалить выбранные карточки?'
 }

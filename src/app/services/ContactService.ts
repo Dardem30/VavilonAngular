@@ -27,4 +27,10 @@ export class ContactService {
       withCredentials: true
     });
   }
+
+  deleteContacts(selectedContacts: number[]) {
+    return this.http.delete(AppComponent.apiEndpoint + 'contact/deleteContacts?ids=' + selectedContacts.join(','), {
+      withCredentials: true
+    })
+  }
 }

@@ -2,6 +2,7 @@
   <table>
     <thead>
     <tr>
+      <th style="width: 30px"></th>
       <th style="width: 20%">{{locale().label.name}}</th>
       <th style="width: 20%">{{locale().label.action}}</th>
       <th style="width: 20%">{{locale().label.userType}}</th>
@@ -9,11 +10,12 @@
     </tr>
     </thead>
     <tbody *ngFor="let userCard of userCards">
-    <tr (click)="openUserCardDetails(userCard.userCardId)" class="row">
-      <td><strong>{{userCard.name}}</strong></td>
-      <td>{{userCard.actionType}}</td>
-      <td>{{userCard.userType}}</td>
-      <td>{{userCard.description}}</td>
+    <tr class="row">
+      <td><mat-checkbox (change)="selectCard(userCard, $event)" [checked]="userCard.checked"></mat-checkbox></td>
+      <td (click)="openUserCardDetails(userCard.userCardId)"><strong>{{userCard.name}}</strong></td>
+      <td (click)="openUserCardDetails(userCard.userCardId)">{{userCard.actionType}}</td>
+      <td (click)="openUserCardDetails(userCard.userCardId)">{{userCard.userType}}</td>
+      <td (click)="openUserCardDetails(userCard.userCardId)">{{userCard.description}}</td>
     </tr>
     </tbody>
   </table>
@@ -22,7 +24,7 @@
   <button mat-raised-button style="margin-right: 20px" (click)="openUserCardDetails(null)">
     {{locale().label.addCard}}
   </button>
-  <button mat-raised-button>
+  <button mat-raised-button (click)="deleteSelectedCards()">
     {{locale().label.deleteSelectedCards}}
   </button>
 </mat-toolbar>

@@ -13,4 +13,5 @@ export class AnnouncementOverviewItem {
   ownerPhoto: string;
   moderationStatusName: string;
   rating;
+  checked: boolean = false;
 }

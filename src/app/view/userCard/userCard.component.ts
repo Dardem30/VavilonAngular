@@ -6,6 +6,8 @@ import {UserCard} from "../../bo/userCard/UserCard";
 import {UserCardService} from "../../services/UserCardService";
 import {UserCardLight} from "../../bo/userCard/UserCardLight";
 import {AppComponent} from "../../app.component";
+import Swal from "sweetalert2";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-main',
@@ -14,13 +16,14 @@ import {AppComponent} from "../../app.component";
 })
 export class UserCardComponent implements OnInit {
   userCards: UserCardLight[] = [];
+  selectedCards: number[] = [];
 
   constructor(private userCardService: UserCardService,
               private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.userCardService.getUserCards().subscribe(result => this.userCards = result)
+    this.userCardService.getUserCards().subscribe(result => this.userCards = result);
   }
 
   openUserCardDetails(userCardId: any) {
@@ -38,8 +41,41 @@ export class UserCardComponent implements OnInit {
       }
     });
   }
+
   locale() {
     return AppComponent.locale;
+  }
+
+  selectCard(userCard: UserCardLight, event) {
+    if (!event.checked) {
+      userCard.checked = false;
+      const arr = [];
+      for (let selectedCard of this.selectedCards) {
+        if (selectedCard != userCard.userCardId) {
+          arr.push(selectedCard);
+        }
+      }
+      this.selectedCards = arr;
+    } else {
+      userCard.checked = true;
+      this.selectedCards.push(userCard.userCardId);
+    }
+  }
+
+  deleteSelectedCards() {
+    Swal.fire({
+      icon: 'warning',
+      text: this.locale().label.msgAreYouSureYouWantToDeleteSelectedCards,
+      showCancelButton: true,
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userCardService.deleteCards(this.selectedCards).subscribe(result => {
+          this.selectedCards = [];
+          this.userCardService.getUserCards().subscribe(result => this.userCards = result)
+        });
+      }
+    })
   }
 }
 
@@ -47,10 +83,11 @@ export class UserCardComponent implements OnInit {
   selector: 'user-card-details',
   templateUrl: 'userCard.details.html',
 })
-export class UserCardDetails {
-  @ViewChild("userCardCloseButton", { read: ElementRef }) userCardCloseButton: ElementRef;
+export class UserCardDetails implements OnInit {
+  @ViewChild("userCardCloseButton", {read: ElementRef}) userCardCloseButton: ElementRef;
   userTypes = UserType;
   actionTypes = ActionType;
+  userCardForm;
   userCard: UserCard = {
     userCardId: null,
     description: null,
@@ -61,7 +98,6 @@ export class UserCardDetails {
   };
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
-    console.log(data.userCardId)
     if (data.userCardId != null) {
       data.userCardService.readUserCard(data.userCardId).subscribe((result: UserCard) => {
         this.userCard = result
@@ -70,14 +106,22 @@ export class UserCardDetails {
   }
 
   saveCard() {
-    console.log(this.userCard);
-    this.data.userCardService.save(this.userCard).subscribe((result: any) => {
-      console.log(result);
-      this.data.onCloseHandler();
-    });
-    this.userCardCloseButton.nativeElement.click();
+    if (!this.userCardForm.invalid) {
+      this.data.userCardService.save(this.userCard).subscribe((result: any) => {
+        console.log(result);
+        this.data.onCloseHandler();
+      });
+      this.userCardCloseButton.nativeElement.click();
+    }
   }
+
   locale() {
     return AppComponent.locale;
+  }
+
+  ngOnInit(): void {
+    this.userCardForm = new FormGroup({
+      name: new FormControl(this.userCard.name, [Validators.required])
+    });
   }
 }

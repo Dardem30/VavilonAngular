@@ -63,4 +63,10 @@ export class ProductService {
     });
 
   }
+
+  deleteProducts(selectedProducts: number[]) {
+    return this.http.delete(AppComponent.apiEndpoint + 'product/deleteProducts?ids=' + selectedProducts.join(','), {
+      withCredentials: true
+    })
+  }
 }

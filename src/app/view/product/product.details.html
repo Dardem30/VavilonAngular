@@ -9,14 +9,14 @@
 </style>
 <h2>{{locale().label.productDetails}}</h2>
 <mat-divider style="margin-bottom: 10px"></mat-divider>
-<mat-form-field appearance="fill">
+<mat-form-field appearance="fill" [formGroup]="productForm">
   <mat-label>{{locale().label.productName}}</mat-label>
-  <input matInput [(ngModel)]="product.name" required>
+  <input matInput [(ngModel)]="product.name" formControlName="name" required>
 </mat-form-field>
 <br>
-<mat-form-field appearance="fill">
+<mat-form-field appearance="fill" [formGroup]="productForm">
   <mat-label>{{locale().label.selectProductCategory}}</mat-label>
-  <mat-select [(ngModel)]="product.productCategory.productCategoryId" required>
+  <mat-select [(ngModel)]="product.productCategory.productCategoryId" formControlName="productCategoryId" required>
     <mat-option *ngFor="let productCategory of productCategories"
                 [value]="productCategory.productCategoryId">{{productCategory.name}}</mat-option>
   </mat-select>
