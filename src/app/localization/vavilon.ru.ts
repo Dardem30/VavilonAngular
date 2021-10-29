@@ -96,5 +96,26 @@ export const label = {
   msgAreYouSureYouWantToDeleteSelectedAnnouncements: 'Вы уверены что вы хотите удалить выбранные объявления?',
   msgAreYouSureYouWantToDeleteSelectedContacts: 'Вы уверены что вы хотите удалить выбранные контакты?',
   msgAreYouSureYouWantToDeleteSelectedProducts: 'Вы уверены что вы хотите удалить выбранные продукты?<br>ВНИМАНИЕ: Объявления с выбранными продуктами так же будут удалены!',
-  msgAreYouSureYouWantToDeleteSelectedCards: 'Вы уверены что вы хотите удалить выбранные карточки?'
+  msgAreYouSureYouWantToDeleteSelectedCards: 'Вы уверены что вы хотите удалить выбранные карточки?',
+  msgInvalidPassword: 'Поле <strong>обязательно</strong> минимальная длина пароля 6 и максимальная 18 так же пароль должен содержать хотя бы 1 букву и цифру',
+  confirmPassword: 'Подтвердить пароль',
+  msgPasswordsAreNotTheSame: 'Пароли не совпадают',
+  loginOrEmail: 'Логин или Email',
+  noResult: 'Ничего не найдено',
+
+  sortDirections: {
+    ASC: 'Возрастанию',
+    DESC: 'Убыванию'
+  },
+  sortOptions: {
+    rating: 'Рейтинг',
+    price: 'Цена',
+    productName: 'Имя продукта'
+  },
+  reset: 'Сбросить',
+  enterAnEmailAndReceiveTheLink: 'Укажите свой email что бы получить ссылку для восстановления пароля',
+  msgCookiesAreDisabled: 'Согласно настройкам вашего браузера мы не можем хранить cookies. ' +
+    '<br>Это значит что вы не сможете использовать свой аккаунт. ' +
+    '<br>Пожалуйста если вы хотите войти в ваш аккаунт - разрешите нам хранить файлы cookies' +
+    '<br>Как сделать это в браузере chrome - <a target="_blank" href="https://support.google.com/accounts/answer/61416?hl=en&co=GENIE.Platform%3DDesktop">ссылка</a>'
 }

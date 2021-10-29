@@ -16,8 +16,8 @@ export enum Locale {
 })
 export class AppComponent {
   title = 'VavilonAngular';
-  public static apiEndpoint = 'https://vavilon-dev.herokuapp.com/';
- // public static apiEndpoint = 'http://localhost:8081/';
+  // public static apiEndpoint = 'https://vavilon-dev.herokuapp.com/';
+ public static apiEndpoint = 'http://localhost:8081/';
   public static profileInfo: ProfileInfo = {
     active: false,
     email: "",
@@ -32,6 +32,7 @@ export class AppComponent {
   public static currencySigns: string[] = ["&dollar;", "&euro;", "&#8381;"];
   public static locale = enLocalization;
   public static showLoadingMask = false;
+  public static colScale = 750;
   public static selectedLocale = Locale.EN;
   public static updateLocaleFn = function (locale) {};
   public static onReceivingProfileInfo = function () {};

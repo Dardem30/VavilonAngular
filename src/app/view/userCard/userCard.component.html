@@ -1,4 +1,7 @@
-<div style="height: 100%">
+<div *ngIf="userCards.length == 0" style="margin-left: 50%;margin-top: 50px">
+  <h2 style="opacity: 0.5">{{locale().label.noResult}}</h2>
+</div>
+<div style="height: 100%" *ngIf="userCards.length != 0">
   <table>
     <thead>
     <tr>

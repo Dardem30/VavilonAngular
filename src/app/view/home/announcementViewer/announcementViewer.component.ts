@@ -84,7 +84,8 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   drawPolygon() {
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 61, lng: 74},
-      zoom: 2
+      minZoom: 3,
+      zoom: 3
     });
 
     this.drawingManager = new google.maps.drawing.DrawingManager({
@@ -235,5 +236,19 @@ export class AnnouncementViewerComponent implements AfterViewInit {
   }
   locale() {
     return AppComponent.locale;
+  }
+
+  copyContact(value: any) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = value;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
   }
 }

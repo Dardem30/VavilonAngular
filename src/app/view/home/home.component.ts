@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AnnouncementService} from "../../services/AnnouncementService";
 import {AnnouncementOverviewItem} from "../../bo/announcement/AnnouncementOverviewItem";
 import {MatPaginator} from "@angular/material/paginator";
@@ -10,10 +10,11 @@ import {AppComponent} from "../../app.component";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit{
   showFiller = false;
   announcements: AnnouncementOverviewItem[] = [];
   mainComponentInstance: MainComponent;
+  cols = 3;
   @ViewChild('paginator') paginator: MatPaginator;
   announcementSearchForm: any = {
     limit: 50,
@@ -23,7 +24,9 @@ export class HomeComponent {
 
   constructor(private announcementService: AnnouncementService) {
   }
-
+  ngOnInit() {
+    this.cols = Math.round(window.innerWidth / 750);
+  }
 
   searchAnnouncement(announcementSearchForm: any) {
     announcementSearchForm.moderationStatusId = ModerationStatuses.APPROVED
@@ -53,5 +56,9 @@ export class HomeComponent {
   }
   locale() {
     return AppComponent.locale;
+  }
+
+  onResize(event: any) {
+    this.cols = Math.round(event.target.innerWidth / 750);
   }
 }

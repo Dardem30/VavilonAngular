@@ -122,7 +122,8 @@ export class AnnouncementDetailsComponent implements AfterViewInit, OnInit {
 
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 61, lng: 74},
-      zoom: 2
+      minZoom: 3,
+      zoom: 3
     });
 
     this.drawingManager = new google.maps.drawing.DrawingManager({
@@ -192,12 +193,12 @@ export class AnnouncementDetailsComponent implements AfterViewInit, OnInit {
       })
       return;
     }
-    // AppComponent.showLoadingMask = true;
-    // this.announcement.announcementDate = new Date();
-    // this.announcementService.save(this.announcement).subscribe(result => {
-    //   this.close();
-    //   AppComponent.showLoadingMask = false;
-    // });
+    AppComponent.showLoadingMask = true;
+    this.announcement.announcementDate = new Date();
+    this.announcementService.save(this.announcement).subscribe(result => {
+      this.close();
+      AppComponent.showLoadingMask = false;
+    });
   }
 
   selectProduct(selectedProduct: ProductOverviewItem, event) {
@@ -255,7 +256,6 @@ export class AnnouncementDetailsComponent implements AfterViewInit, OnInit {
   }
 
   getModerationTextAsHtml(moderationText) {
-    console.log(moderationText.replace('\n', '<br>'));
     return 'Decline cause: ' + moderationText.replace(/\n/g, '<br>');
   }
 

@@ -104,7 +104,7 @@
       <mat-card-title>{{contact.name}}</mat-card-title>
       <mat-card-subtitle>{{contact.value}}</mat-card-subtitle>
       <mat-card-actions>
-        <button mat-button>{{locale().label.copy}}</button>
+        <button mat-button (click)="copyContact(contact.value)">{{locale().label.copy}}</button>
       </mat-card-actions>
     </mat-card>
   </div>
@@ -168,15 +168,15 @@
 <div id="map" style="margin-bottom: 10px"></div>
 <mat-divider style="margin-bottom: 10px"></mat-divider>
 <div style="padding: 0 30%">
-  <mat-form-field appearance="fill" style="width: 100%">
+  <mat-form-field appearance="fill" style="width: 100%" *ngIf="getProfileInfo().loggedIn">
     <mat-label>{{locale().label.comment}}</mat-label>
     <textarea matInput style="height: 200px" [(ngModel)]="commentText"></textarea>
   </mat-form-field>
-  <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block"
+  <button mat-raised-button mat-dialog-close style="margin-bottom: 10px; display: inline-block" *ngIf="getProfileInfo().loggedIn"
           (click)="submitComment(null)">
     {{locale().label.submit}}
   </button>
-  <mat-divider style="margin-bottom: 10px"></mat-divider>
+  <mat-divider *ngIf="getProfileInfo().loggedIn" style="margin-bottom: 10px"></mat-divider>
   <!-- Comment 1 start -->
   <div class="comment" [id]="'comment-' + comment.commentId" *ngFor="let comment of comments">
     <a [href]="'#comment-' + comment.commentId" class="comment-border-link">
@@ -209,7 +209,7 @@
       <p>
         {{comment.text}}
       </p>
-      <button type="button" (click)="comment.showReplyDialog = !comment.showReplyDialog">{{locale().label.reply}}</button>
+      <button type="button" *ngIf="getProfileInfo().loggedIn" (click)="comment.showReplyDialog = !comment.showReplyDialog">{{locale().label.reply}}</button>
       <div *ngIf="comment.showReplyDialog">
         <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>{{locale().label.comment}}</mat-label>
@@ -261,7 +261,7 @@
             <p>
               {{childComment.text}}
             </p>
-            <button type="button" (click)="childComment.showReplyDialog = !childComment.showReplyDialog">{{locale().label.reply}}
+            <button type="button" *ngIf="getProfileInfo().loggedIn" (click)="childComment.showReplyDialog = !childComment.showReplyDialog">{{locale().label.reply}}
             </button>
             <div *ngIf="childComment.showReplyDialog">
               <mat-form-field appearance="fill" style="width: 100%">

@@ -1,4 +1,7 @@
-<div style="height: 100%;overflow-y: auto">
+<div *ngIf="contacts.length == 0" style="margin-left: 50%;margin-top: 50px">
+  <h2 style="opacity: 0.5">{{locale().label.noResult}}</h2>
+</div>
+<div style="height: 100%;overflow-y: auto" *ngIf="contacts.length != 0">
   <table>
     <thead>
     <tr>

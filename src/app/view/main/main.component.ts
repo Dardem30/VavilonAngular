@@ -14,7 +14,15 @@ import {SecurityService} from "../../services/SecurityService";
 import {MatSidenav} from "@angular/material/sidenav";
 import {AppComponent, Locale} from "../../app.component";
 import {ErrorStateMatcher} from "@angular/material/core";
-import {FormControl, FormGroupDirective, NgForm, Validators} from "@angular/forms";
+import {
+  AbstractControl,
+  FormControl,
+  FormGroupDirective,
+  NgForm,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
 import {HomeComponent} from "../home/home.component";
 import {UserCardComponent} from "../userCard/userCard.component";
 import {ProductComponent} from "../product/product.component";
@@ -33,6 +41,7 @@ import {MessagesComponent} from "../messages/messages.component";
 import {ApproveAnnouncementOverviewComponent} from "../approveAnnouncementOverview/approveAnnouncementOverview.component";
 import {ModerationStatus} from "../../bo/announcement/ModerationStatus";
 import {ProfileComponent} from "../profile/profile.component";
+import Swal from "sweetalert2";
 
 declare const google: any;
 
@@ -69,6 +78,10 @@ export class MainComponent implements OnInit, AfterViewInit {
     lastName: null,
     login: null,
     password: null,
+    confirmPassword: null,
+    email: null
+  };
+  forgotPasswordModel: any = {
     email: null
   };
   openChat = true;
@@ -86,7 +99,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('accordionHeader') accordionHeader: any;
   @ViewChild('paginator') paginator: MatPaginator;
   @ViewChild('loginForm') loginForm: ElementRef;
+  @ViewChild('forgotPasswordForm') forgotPasswordForm: ElementRef;
   @ViewChild('chatHistory') chatHistory: ElementRef;
+  @ViewChild('mainContainer') mainContainer;
   @ViewChild('registrationForm') registrationForm: ElementRef;
   @ViewChild('verificationForm') verificationForm: ElementRef;
   @ViewChild('authSideNav') authSideNav: MatSidenav;
@@ -115,6 +130,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   usersInCurrentConversation: UserLight[] = [];
   currentChatSubscriptionId: string;
   moderationStatuses: ModerationStatus[] = [];
+  markers = [];
 
   constructor(private announcementService: AnnouncementService,
               private componentFactoryResolver: ComponentFactoryResolver,
@@ -172,7 +188,8 @@ export class MainComponent implements OnInit, AfterViewInit {
 
     this.map = new google.maps.Map(document.getElementById('main-map'), {
       center: {lat: 61, lng:  74},
-      zoom: 2
+      minZoom: 3,
+      zoom: 3
     });
 
     this.drawingManager = new google.maps.drawing.DrawingManager({
@@ -186,6 +203,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
     this.drawingManager.setMap(this.map);
     google.maps.event.addListener(this.drawingManager, 'overlaycomplete', (event) => {
+      this.markers.push(event.overlay);
       this.announcementSearchForm.coordinates.push({lat: event.overlay.position.lat(), lng: event.overlay.position.lng()})
     });
 
@@ -383,6 +401,8 @@ export class MainComponent implements OnInit, AfterViewInit {
       if (toggle) {
         scope.profileSideNav.toggle();
       }
+      console.log(scope.mainContainer)
+      scope.mainContainer.elementRef.nativeElement.scrollTop = 0
     }, 500);
   }
 
@@ -406,9 +426,15 @@ export class MainComponent implements OnInit, AfterViewInit {
           this.authSideNavErrorMessage = '';
           this.authSideNav.toggle();
           this.securityService.getProfileInfo().subscribe(profileInfo => {
+            console.log(profileInfo);
             profileInfo.photo = profileInfo.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
             AppComponent.profileInfo = profileInfo;
             AppComponent.profileInfo.loggedIn = true;
+          }, error => {
+            Swal.fire({
+              icon: 'warning',
+              html: AppComponent.locale.label.msgCookiesAreDisabled
+            });
           });
           this.initializeWebSocketConnection();
         } else {
@@ -464,7 +490,12 @@ export class MainComponent implements OnInit, AfterViewInit {
       previousForm = scope.verificationForm;
       scope.verificationForm.nativeElement.classList.remove('slide-in-left');
       scope.verificationForm.nativeElement.classList.add('slide-out-right');
+    } else if (this.authState == AuthState.ForgotPassword) {
+      previousForm = scope.verificationForm;
+      scope.forgotPasswordForm.nativeElement.classList.remove('slide-in-left');
+      scope.forgotPasswordForm.nativeElement.classList.add('slide-out-right');
     }
+
     setTimeout(function () {
       scope.authState = state;
       previousForm.nativeElement.classList.remove('slide-out-right');
@@ -474,6 +505,8 @@ export class MainComponent implements OnInit, AfterViewInit {
         scope.registrationForm.nativeElement.classList.add('slide-in-left');
       } else if (state == AuthState.VerificationCode) {
         scope.verificationForm.nativeElement.classList.add('slide-in-left');
+      } else if (state == AuthState.ForgotPassword) {
+        scope.forgotPasswordForm.nativeElement.classList.add('slide-in-left');
       }
     }, 500);
   }
@@ -522,7 +555,15 @@ export class MainComponent implements OnInit, AfterViewInit {
   registrationPasswordValidator = new FormControl('', [
     Validators.required,
     Validators.minLength(6),
-    Validators.maxLength(18)
+    Validators.maxLength(18),
+    Validators.pattern(/^([0-9]+[a-zA-Z]+|[a-zA-Z]+[0-9]+)[0-9a-zA-Z]*$/)
+  ]);
+  checkPasswords: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => {
+    return group.value === this.registrationModel.password ? null : { notSame: true }
+  }
+  registrationConfirmPasswordValidator = new FormControl(this, [
+    Validators.required,
+    this.checkPasswords
   ]);
   emailValidator = new FormControl('', [
     Validators.required,
@@ -535,6 +576,7 @@ export class MainComponent implements OnInit, AfterViewInit {
       || this.lastNameValidator.invalid
       || this.registrationLoginValidator.invalid
       || this.registrationPasswordValidator.invalid
+      || this.registrationConfirmPasswordValidator.invalid
       || this.emailValidator.invalid
   }
 
@@ -685,12 +727,28 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
     this.changeLocale();
   }
+
+  resetSearchCriteria() {
+    this.announcementSearchForm.content = null;
+    this.announcementSearchForm.priceRangeStart = null;
+    this.announcementSearchForm.priceRangeEnd = null;
+    this.announcementSearchForm.currencySign = null;
+    this.announcementSearchForm.sort = {
+      property: "rating",
+      direction: "DESC"
+    };
+    this.announcementSearchForm.coordinates = [];
+    for (let marker of this.markers) {
+      marker.setMap(null);
+    }
+  }
 }
 
 export enum AuthState {
   Login,
   Registration,
-  VerificationCode
+  VerificationCode,
+  ForgotPassword
 }
 
 export enum MainTabs {

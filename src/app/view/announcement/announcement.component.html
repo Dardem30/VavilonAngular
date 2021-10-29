@@ -1,3 +1,6 @@
+<div *ngIf="announcements.length == 0" style="margin-left: 50%;margin-top: 50px">
+  <h2 style="opacity: 0.5">{{locale().label.noResult}}</h2>
+</div>
 <mat-grid-list cols="3" rowHeight="0.89:1">
   <mat-grid-tile *ngFor="let announcement of announcements">
     <mat-card class="example-card">
@@ -5,7 +8,6 @@
         <div mat-card-avatar class="example-header-image"
              [style]="'background-image: url(' + (announcement.ownerPhoto == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + announcement.ownerPhoto) + ');'"></div>
         <mat-card-title>{{announcement.userName}}</mat-card-title>
-        <mat-card-subtitle>Тип</mat-card-subtitle>
       </mat-card-header>
       <img mat-card-image src="https://drive.google.com/uc?export=view&id={{announcement.image}}"
            style="max-height: 350px; max-width: 465px">

@@ -96,5 +96,26 @@ export const label = {
   msgAreYouSureYouWantToDeleteSelectedAnnouncements: 'Are you sure you want to delete selected announcements?',
   msgAreYouSureYouWantToDeleteSelectedContacts: 'Are you sure you want to delete selected contacts?',
   msgAreYouSureYouWantToDeleteSelectedProducts: 'Are you sure you want to delete selected products?<br>NOTE: it will also delete announcements with selected products!',
-  msgAreYouSureYouWantToDeleteSelectedCards: 'Are you sure you want to delete selected cards?'
+  msgAreYouSureYouWantToDeleteSelectedCards: 'Are you sure you want to delete selected cards?',
+  msgInvalidPassword: 'This field is <strong>required</strong> minimum length of password is 6 and maximum is 18 and it should contain at least 1 letter and number',
+  confirmPassword: 'Confirm password',
+  msgPasswordsAreNotTheSame: 'Passwords are not the same',
+  loginOrEmail: 'Login or Email',
+  noResult: 'No result',
+
+  sortDirections: {
+    ASC: 'ASC',
+    DESC: 'DESC'
+  },
+  sortOptions: {
+    rating: 'Rating',
+    price: 'Price',
+    productName: 'Product name'
+  },
+  reset: 'Reset',
+  enterAnEmailAndReceiveTheLink: 'Enter your email and we will send you a link for restoring password',
+  msgCookiesAreDisabled: 'According to your browser preferences we can\'t store third party cookies. ' +
+    '<br>It means that you will not be able to sign in to your account. ' +
+    '<br>Please if you want to use your account allow storing cookies in your browser' +
+    '<br>How to do it in chrome - <a target="_blank" href="https://support.google.com/accounts/answer/61416?hl=en&co=GENIE.Platform%3DDesktop">link</a>'
 }

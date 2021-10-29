@@ -43,177 +43,218 @@
     </button>
   </mat-toolbar>
   <mat-sidenav-container style="flex: 1 1 auto;">
-    <mat-sidenav #sidenav="matSidenav">
+    <mat-sidenav #sidenav="matSidenav" style="width: 210px">
+      <mat-sidenav-content style="padding: 10px">
 
-      <img class="avatar mat-elevation-z8" [src]="getProfileInfo().photo"/>
+        <img class="avatar mat-elevation-z8" [src]="getProfileInfo().photo"/>
 
-      <h4 class="name">{{getProfileInfo().firstName}} {{getProfileInfo().lastName}}</h4>
-      <p class="designation">ИП</p>
+        <h4 class="name"
+            *ngIf="getProfileInfo().loggedIn">{{getProfileInfo().firstName}} {{getProfileInfo().lastName}}</h4>
+        <h4 class="name" *ngIf="!getProfileInfo().loggedIn">
+          <button mat-button class="menu-button"
+                  style="display: block;margin: auto;"
+                  (click)="authSideNav.toggle()">
+            <span>{{locale().label.signIn}}</span>
+          </button>
+        </h4>
+        <!--        <p class="designation">ИП</p>-->
 
-      <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-      <button mat-button class="menu-button" (click)="switchTab(tabs.HOME, null, true)">
-        <mat-icon>home</mat-icon>
-        <span>{{locale().label.tabs.main}}</span>
-      </button>
-      <button mat-button class="menu-button" (click)="switchTab(tabs.PROFILE, {userId: getProfileInfo().userId}, true)" *ngIf="getProfileInfo().loggedIn">
-        <mat-icon>account_circle</mat-icon>
-        <span>{{locale().label.tabs.myProfile}}</span>
-      </button>
-      <button mat-button class="menu-button" (click)="switchTab(tabs.APPROVE_ANNOUNCEMENT_OVERVIEW, null, true)" *ngIf="getProfileInfo().role === 'ADMIN'">
-        <mat-icon>rate_review</mat-icon>
-        <span>{{locale().label.tabs.approveAnnouncements}}</span>
-      </button>
-      <button mat-button class="menu-button" (click)="switchTab(tabs.MESSAGES, null, true)" *ngIf="getProfileInfo().loggedIn">
-        <mat-icon>mail_outline</mat-icon>
-        <span>{{locale().label.tabs.messages}}</span>
-      </button>
-      <button mat-button class="menu-button" (click)="switchTab(tabs.ANNOUNCEMENT, null, true)" *ngIf="getProfileInfo().loggedIn">
-        <mat-icon>gavel</mat-icon>
-        <span>{{locale().label.tabs.announcements}}</span>
-      </button>
-      <button mat-button class="menu-button" (click)="switchTab(tabs.PRODUCTS, null, true)" *ngIf="getProfileInfo().loggedIn">
-        <mat-icon>shopping_cart</mat-icon>
-        <span>{{locale().label.tabs.products}}</span>
-      </button>
-      <button mat-button class="menu-button" (click)="switchTab(tabs.CARDS, null, true)" *ngIf="getProfileInfo().loggedIn">
-        <mat-icon>credit_card</mat-icon>
-        <span>{{locale().label.tabs.cards}}</span>
-      </button>
-      <button mat-button class="menu-button" (click)="switchTab(tabs.CONTACT, null, true)" *ngIf="getProfileInfo().loggedIn">
-        <mat-icon>contacts</mat-icon>
-        <span>{{locale().label.tabs.contacts}}</span>
-      </button>
+        <button mat-button class="menu-button" (click)="switchTab(tabs.HOME, null, true)">
+          <mat-icon>home</mat-icon>
+          <span>{{locale().label.tabs.main}}</span>
+        </button>
+        <button mat-button class="menu-button"
+                (click)="switchTab(tabs.PROFILE, {userId: getProfileInfo().userId}, true)"
+                *ngIf="getProfileInfo().loggedIn">
+          <mat-icon>account_circle</mat-icon>
+          <span>{{locale().label.tabs.myProfile}}</span>
+        </button>
+        <button mat-button class="menu-button" (click)="switchTab(tabs.APPROVE_ANNOUNCEMENT_OVERVIEW, null, true)"
+                *ngIf="getProfileInfo().role === 'ADMIN'">
+          <mat-icon>rate_review</mat-icon>
+          <span>{{locale().label.tabs.approveAnnouncements}}</span>
+        </button>
+        <button mat-button class="menu-button" (click)="switchTab(tabs.MESSAGES, null, true)"
+                *ngIf="getProfileInfo().loggedIn">
+          <mat-icon>mail_outline</mat-icon>
+          <span>{{locale().label.tabs.messages}}</span>
+        </button>
+        <button mat-button class="menu-button" (click)="switchTab(tabs.ANNOUNCEMENT, null, true)"
+                *ngIf="getProfileInfo().loggedIn">
+          <mat-icon>gavel</mat-icon>
+          <span>{{locale().label.tabs.announcements}}</span>
+        </button>
+        <button mat-button class="menu-button" (click)="switchTab(tabs.PRODUCTS, null, true)"
+                *ngIf="getProfileInfo().loggedIn">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>{{locale().label.tabs.products}}</span>
+        </button>
+        <button mat-button class="menu-button" (click)="switchTab(tabs.CARDS, null, true)"
+                *ngIf="getProfileInfo().loggedIn">
+          <mat-icon>credit_card</mat-icon>
+          <span>{{locale().label.tabs.cards}}</span>
+        </button>
+        <button mat-button class="menu-button" (click)="switchTab(tabs.CONTACT, null, true)"
+                *ngIf="getProfileInfo().loggedIn">
+          <mat-icon>contacts</mat-icon>
+          <span>{{locale().label.tabs.contacts}}</span>
+        </button>
 
-      <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-      <button mat-button class="menu-button">
-        <mat-icon>help</mat-icon>
-        <span>{{locale().label.help}}</span>
-      </button>
+        <button mat-button class="menu-button">
+          <mat-icon>help</mat-icon>
+          <span>{{locale().label.help}}</span>
+        </button>
 
+      </mat-sidenav-content>
     </mat-sidenav>
     <mat-sidenav id="authSideNav" #authSideNav position="end" style="width: 340px">
+      <mat-sidenav-content style="padding: 10px">
+        <h3 class="name">{{locale().label.welcomeToVavilon}}</h3>
+        <h4 class="designation" *ngIf="authState == authStates.Login">{{locale().label.pleaseLogin}}</h4>
+        <h4 class="designation" *ngIf="authState == authStates.ForgotPassword">{{locale().label.enterAnEmailAndReceiveTheLink}}</h4>
+        <h4 class="designation"
+            *ngIf="authState == authStates.Registration">{{locale().label.labelPleaseFillAllTheFieldsForSignUp}}</h4>
+        <h4 class="designation"
+            *ngIf="authState == authStates.VerificationCode">{{locale().label.pleaseEnterTheCodeWhichIsSentOnEmail}} {{verificationEmail}}</h4>
+        <mat-divider></mat-divider>
 
-      <h3 class="name">{{locale().label.welcomeToVavilon}}</h3>
-      <h4 class="designation" *ngIf="authState == authStates.Login">{{locale().label.pleaseLogin}}</h4>
-      <h4 class="designation" *ngIf="authState == authStates.Registration">{{locale().label.labelPleaseFillAllTheFieldsForSignUp}}</h4>
-      <h4 class="designation" *ngIf="authState == authStates.VerificationCode">{{locale().label.pleaseEnterTheCodeWhichIsSentOnEmail}} {{verificationEmail}}</h4>
-      <mat-divider></mat-divider>
 
+        <form #loginForm [ngStyle]="{display: authState != authStates.Login ? 'none' : 'block'}">
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.loginOrEmail}}</mat-label>
+            <input matInput [(ngModel)]="authForm.login" [formControl]="loginValidator" [errorStateMatcher]="matcher">
+            <mat-error *ngIf="loginValidator.invalid">
+              {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
+            </mat-error>
+          </mat-form-field>
 
-      <form #loginForm [ngStyle]="{display: authState != authStates.Login ? 'none' : 'block'}">
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.login}}</mat-label>
-          <input matInput [(ngModel)]="authForm.login" [formControl]="loginValidator" [errorStateMatcher]="matcher">
-          <mat-error *ngIf="loginValidator.invalid">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
-          </mat-error>
-        </mat-form-field>
+          <br>
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.password}}</mat-label>
+            <input matInput type="password" [(ngModel)]="authForm.password" [formControl]="passwordValidator"
+                   [errorStateMatcher]="matcher">
+            <mat-error *ngIf="passwordValidator.invalid">
+              {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
+            </mat-error>
+          </mat-form-field>
+        </form>
+        <form #verificationForm [ngStyle]="{display: authState != authStates.VerificationCode ? 'none' : 'block'}">
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.code}}</mat-label>
+            <input matInput [(ngModel)]="verificationModel.activationCode" [formControl]="verificationCodeValidator"
+                   [errorStateMatcher]="matcher">
+            <mat-error *ngIf="verificationCodeValidator.invalid">
+              {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
+            </mat-error>
+          </mat-form-field>
+        </form>
+        <form #forgotPasswordForm [ngStyle]="{display: authState != authStates.ForgotPassword ? 'none' : 'block'}">
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.email}}</mat-label>
+            <input matInput type="email" [(ngModel)]="forgotPasswordModel.email">
+          </mat-form-field>
+        </form>
 
+        <div #registrationForm [ngStyle]="{display: authState != authStates.Registration ? 'none' : 'block'}">
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.firstName}}</mat-label>
+            <input matInput [(ngModel)]="registrationModel.firstName" [formControl]="firstNameValidator"
+                   [errorStateMatcher]="matcher">
+            <mat-error *ngIf="firstNameValidator.invalid">
+              {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.lastName}}</mat-label>
+            <input matInput [(ngModel)]="registrationModel.lastName" [formControl]="lastNameValidator"
+                   [errorStateMatcher]="matcher">
+            <mat-error *ngIf="lastNameValidator.invalid">
+              {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.login}}</mat-label>
+            <input matInput [(ngModel)]="registrationModel.login" [formControl]="registrationLoginValidator"
+                   [errorStateMatcher]="matcher">
+            <mat-error *ngIf="registrationLoginValidator.invalid">
+              {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.email}}</mat-label>
+            <input matInput type="email" [(ngModel)]="registrationModel.email" [formControl]="emailValidator"
+                   [errorStateMatcher]="matcher">
+            <mat-error *ngIf="emailValidator.hasError('required')">
+              {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
+            </mat-error>
+            <mat-error *ngIf="emailValidator.hasError('email')">
+              {{locale().label.theEmailIs}} <strong>{{locale().label.incorrect}}</strong>
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.password}}</mat-label>
+            <input matInput type="password" [(ngModel)]="registrationModel.password"
+                   [formControl]="registrationPasswordValidator" [errorStateMatcher]="matcher">
+            <mat-error *ngIf="registrationPasswordValidator.invalid">
+              <p [innerHTML]="locale().label.msgInvalidPassword"></p>
+            </mat-error>
+          </mat-form-field>
+          <div *ngIf="registrationPasswordValidator.touched && registrationPasswordValidator.invalid" style="height: 20px"></div>
+          <br>
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.confirmPassword}}</mat-label>
+            <input matInput type="password" [(ngModel)]="registrationModel.confirmPassword"
+                   [formControl]="registrationConfirmPasswordValidator" [errorStateMatcher]="matcher">
+            <mat-error *ngIf="registrationConfirmPasswordValidator.invalid">
+              <p [innerHTML]="locale().label.msgPasswordsAreNotTheSame"></p>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <mat-divider></mat-divider>
+
+        <button *ngIf="authState == authStates.Login" mat-button class="menu-button"
+                style="display: block;margin: auto;"
+                (click)="login()">
+          <span>{{locale().label.signIn}}</span>
+        </button>
+        <button *ngIf="authState == authStates.Login" mat-button class="menu-button"
+                style="display: block;margin: auto;"
+                (click)="switchAuthForm(authStates.ForgotPassword)">
+          <span>{{locale().label.forgotThePassword}}</span>
+        </button>
+        <button *ngIf="authState == authStates.Login" mat-button class="menu-button"
+                style="display: block;margin: auto;"
+                (click)="switchAuthForm(authStates.Registration)">
+          <span>{{locale().label.signUp}}</span>
+        </button>
+        <button *ngIf="authState == authStates.Registration" mat-button class="menu-button"
+                style="display: block;margin: auto;"
+                (click)="registration()">
+          <span>{{locale().label.signUp}}</span>
+        </button>
+        <button *ngIf="authState == authStates.VerificationCode" mat-button class="menu-button"
+                style="display: block;margin: auto;"
+                (click)="activateUser()">
+          <span>{{locale().label.submit}}</span>
+        </button>
+        <button *ngIf="authState == authStates.Registration || authState == authStates.VerificationCode || authState == authStates.ForgotPassword" mat-button
+                class="menu-button" style="display: block;margin: auto;"
+                (click)="switchAuthForm(authStates.Login)">
+          <span>{{locale().label.signIn}}</span>
+        </button>
         <br>
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.password}}</mat-label>
-          <input matInput type="password" [(ngModel)]="authForm.password" [formControl]="passwordValidator"
-                 [errorStateMatcher]="matcher">
-          <mat-error *ngIf="passwordValidator.invalid">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
-          </mat-error>
-        </mat-form-field>
-      </form>
-      <form #verificationForm [ngStyle]="{display: authState != authStates.VerificationCode ? 'none' : 'block'}">
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.code}}</mat-label>
-          <input matInput [(ngModel)]="verificationModel.activationCode" [formControl]="verificationCodeValidator"
-                 [errorStateMatcher]="matcher">
-          <mat-error *ngIf="verificationCodeValidator.invalid">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
-          </mat-error>
-        </mat-form-field>
-      </form>
-
-      <div #registrationForm [ngStyle]="{display: authState != authStates.Registration ? 'none' : 'block'}">
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.firstName}}</mat-label>
-          <input matInput [(ngModel)]="registrationModel.firstName" [formControl]="firstNameValidator"
-                 [errorStateMatcher]="matcher">
-          <mat-error *ngIf="firstNameValidator.invalid">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
-          </mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.lastName}}</mat-label>
-          <input matInput [(ngModel)]="registrationModel.lastName" [formControl]="lastNameValidator"
-                 [errorStateMatcher]="matcher">
-          <mat-error *ngIf="lastNameValidator.invalid">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
-          </mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.login}}</mat-label>
-          <input matInput [(ngModel)]="registrationModel.login" [formControl]="registrationLoginValidator"
-                 [errorStateMatcher]="matcher">
-          <mat-error *ngIf="registrationLoginValidator.invalid">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
-          </mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.email}}</mat-label>
-          <input matInput type="email" [(ngModel)]="registrationModel.email" [formControl]="emailValidator"
-                 [errorStateMatcher]="matcher">
-          <mat-error *ngIf="emailValidator.hasError('required')">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong>
-          </mat-error>
-          <mat-error *ngIf="emailValidator.hasError('email')">
-            {{locale().label.theEmailIs}} <strong>{{locale().label.incorrect}}</strong>
-          </mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field appearance="fill" style="width: 100%">
-          <mat-label style="color: white; opacity: 0.5">{{locale().label.password}}</mat-label>
-          <input matInput type="password" [(ngModel)]="registrationModel.password"
-                 [formControl]="registrationPasswordValidator" [errorStateMatcher]="matcher">
-          <mat-error style="padding-bottom: 20px" *ngIf="registrationPasswordValidator.invalid">
-            {{locale().label.thisFieldIs}} <strong>{{locale().label.required}}</strong> {{locale().label.minimumLengthOfPasswordIsBetween}}
-          </mat-error>
-        </mat-form-field>
-
-      </div>
-      <mat-divider></mat-divider>
-
-      <button *ngIf="authState == authStates.Login" mat-button class="menu-button" style="display: block;margin: auto;"
-              (click)="login()">
-        <span>{{locale().label.signIn}}</span>
-      </button>
-      <button *ngIf="authState == authStates.Login" mat-button class="menu-button" style="display: block;margin: auto;">
-        <span>{{locale().label.forgotThePassword}}</span>
-      </button>
-      <button *ngIf="authState == authStates.Login" mat-button class="menu-button" style="display: block;margin: auto;"
-              (click)="switchAuthForm(authStates.Registration)">
-        <span>{{locale().label.signUp}}</span>
-      </button>
-      <button *ngIf="authState == authStates.Registration" mat-button class="menu-button"
-              style="display: block;margin: auto;"
-              (click)="registration()">
-        <span>{{locale().label.signUp}}</span>
-      </button>
-      <button *ngIf="authState == authStates.VerificationCode" mat-button class="menu-button"
-              style="display: block;margin: auto;"
-              (click)="activateUser()">
-        <span>{{locale().label.submit}}</span>
-      </button>
-      <button *ngIf="authState == authStates.Registration || authState == authStates.VerificationCode" mat-button
-              class="menu-button" style="display: block;margin: auto;"
-              (click)="switchAuthForm(authStates.Login)">
-        <span>{{locale().label.signIn}}</span>
-      </button>
-      <br>
-      <div style="color: #f44336">{{authSideNavErrorMessage}}</div>
+        <div style="color: #f44336">{{authSideNavErrorMessage}}</div>
+      </mat-sidenav-content>
     </mat-sidenav>
-    <mat-sidenav-content>
+    <mat-sidenav-content #mainContainer>
       <div style="display: flex;flex-flow: column;height: 100%">
         <div style="flex: 0 1 200px;">
           <mat-accordion>
@@ -225,13 +266,13 @@
                 <input matInput [(ngModel)]="announcementSearchForm.content">
               </mat-form-field>
               <br>
-              <mat-form-field appearance="fill" style="width: 110px;margin-right: 20px">
+              <mat-form-field appearance="fill" style="width: auto;margin-right: 20px">
                 <mat-label>{{locale().label.priceStart}}</mat-label>
-                <input matInput type="number" [(ngModel)]="announcementSearchForm.priceRangeStart">
+                <input matInput type="number" min="0" [(ngModel)]="announcementSearchForm.priceRangeStart">
               </mat-form-field>
-              <mat-form-field appearance="fill" style="width: 110px;margin-right: 20px">
+              <mat-form-field appearance="fill" style="width: auto;margin-right: 20px">
                 <mat-label>{{locale().label.priceEnd}}</mat-label>
-                <input matInput type="number" [(ngModel)]="announcementSearchForm.priceRangeEnd">
+                <input matInput type="number" min="0" [(ngModel)]="announcementSearchForm.priceRangeEnd">
               </mat-form-field>
               <mat-form-field appearance="fill" class="readonly-wrapper" style="width: 125px;">
                 <mat-label>{{locale().label.currencySign}}</mat-label>
@@ -244,14 +285,14 @@
                 <mat-label>{{locale().label.sortBy}}</mat-label>
                 <mat-select [(ngModel)]="announcementSearchForm.sort.property">
                   <mat-option *ngFor="let sort of sortOptions"
-                              [value]="sort">{{sort}}</mat-option>
+                              [value]="sort">{{locale().label.sortOptions[sort]}}</mat-option>
                 </mat-select>
               </mat-form-field>
               <mat-form-field appearance="fill" class="readonly-wrapper">
                 <mat-label>{{locale().label.direction}}</mat-label>
                 <mat-select [(ngModel)]="announcementSearchForm.sort.direction">
                   <mat-option *ngFor="let direction of directionOptions"
-                              [value]="direction">{{direction}}</mat-option>
+                              [value]="direction">{{locale().label.sortDirections[direction]}}</mat-option>
                 </mat-select>
               </mat-form-field>
               <br>
@@ -266,12 +307,16 @@
               <button mat-button style="display: block;width: 100%; color: #3d3c3a" (click)="searchAnnouncement()">
                 {{locale().label.search}}
               </button>
+              <br>
+              <button mat-button style="display: block;width: 100%; color: #3d3c3a" (click)="resetSearchCriteria()">
+                {{locale().label.reset}}
+              </button>
             </mat-expansion-panel>
           </mat-accordion>
           <img src="assets/logo.png" style="display: block;margin: 15px auto;width: 80%;">
           <mat-divider></mat-divider>
         </div>
-        <div style="flex: 1 1 auto;" >
+        <div style="flex: 1 1 auto;">
           <div #mainContent></div>
         </div>
       </div>
@@ -284,11 +329,15 @@
         </header>
         <div class="chat" id="main-chat">
           <div class="chat-history" #chatHistory (scroll)="onChatScroll($event)">
-            <div class="chat-message clearfix" *ngFor="let message of messages" [id]="'chatMessage-' + message.messageId">
-              <img [src]="message.user.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + message.user.photo"  alt="" width="32" height="32">
+            <div class="chat-message clearfix" *ngFor="let message of messages"
+                 [id]="'chatMessage-' + message.messageId">
+              <img
+                [src]="message.user.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + message.user.photo"
+                alt="" width="32" height="32">
               <div class="chat-message-content clearfix" style="word-wrap: break-word">
                 <span class="chat-time">{{message.createTime | date: 'HH:mm'}}</span>
-                <h5 [style.font-weight]="isYou(message.user.userId) ? '700' : 'normal'" [style.color]="isYou(message.user.userId) ? 'red' : 'black'">{{message.user.firstName + ' ' + message.user.lastName}}</h5>
+                <h5 [style.font-weight]="isYou(message.user.userId) ? '700' : 'normal'"
+                    [style.color]="isYou(message.user.userId) ? 'red' : 'black'">{{message.user.firstName + ' ' + message.user.lastName}}</h5>
                 <p>{{message.text}}</p>
               </div>
               <hr style="margin-top: 5px">
@@ -297,7 +346,8 @@
           <div>
             <mat-divider></mat-divider>
             <mat-form-field class="full-width">
-              <input matInput placeholder="Start chatting..." name="text" #chatMessageField (keydown.enter)="sendMessage(chatMessageField)">
+              <input matInput placeholder="Start chatting..." name="text" #chatMessageField
+                     (keydown.enter)="sendMessage(chatMessageField)">
               <mat-icon matSuffix (click)="sendMessage(chatMessageField)">send</mat-icon>
             </mat-form-field>
           </div>
