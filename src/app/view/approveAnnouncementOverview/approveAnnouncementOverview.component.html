@@ -1,7 +1,7 @@
 <div *ngIf="announcements.length == 0" style="margin-left: 50%;margin-top: 50px">
   <h2 style="opacity: 0.5">{{locale().label.noResult}}</h2>
 </div>
-<mat-grid-list cols="3" rowHeight="0.93:1">
+<mat-grid-list [cols]="cols" rowHeight="0.93:1" (window:resize)="onResize($event)">
   <mat-grid-tile *ngFor="let announcement of announcements">
     <mat-card class="example-card">
       <mat-card-header>

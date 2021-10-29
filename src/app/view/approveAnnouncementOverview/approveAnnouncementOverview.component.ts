@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AnnouncementService} from "../../services/AnnouncementService";
 import {AnnouncementOverviewItem} from "../../bo/announcement/AnnouncementOverviewItem";
 import {MatPaginator} from "@angular/material/paginator";
@@ -10,10 +10,11 @@ import {AppComponent} from "../../app.component";
   templateUrl: './approveAnnouncementOverview.component.html',
   styleUrls: ['./approveAnnouncementOverview.component.css']
 })
-export class ApproveAnnouncementOverviewComponent {
+export class ApproveAnnouncementOverviewComponent implements OnInit {
   showFiller = false;
   announcements: AnnouncementOverviewItem[] = [];
   mainComponentInstance: MainComponent;
+  cols = 3;
   @ViewChild('paginator') paginator: MatPaginator;
   announcementSearchForm: any = {
     limit: 50,
@@ -23,7 +24,12 @@ export class ApproveAnnouncementOverviewComponent {
 
   constructor(private announcementService: AnnouncementService) {
   }
-
+  ngOnInit(): void {
+    this.cols = Math.round(window.innerWidth / 750);
+  }
+  onResize(event: any) {
+    this.cols = Math.round(event.target.innerWidth / 750);
+  }
 
   searchAnnouncement(announcementSearchForm: any) {
     announcementSearchForm.moderationStatusIds = [ModerationStatuses.TO_BE_REVIEWED, ModerationStatuses.DECLINED]

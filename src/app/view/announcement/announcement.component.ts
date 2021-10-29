@@ -16,6 +16,7 @@ export class AnnouncementComponent implements OnInit {
   @ViewChild('paginator') paginator: MatPaginator;
   mainComponentInstance: MainComponent;
   selectedAnnouncements: number[] = [];
+  cols = 3;
   announcementSearchForm: any = {
     userId: AppComponent.profileInfo.userId,
     start: 0,
@@ -31,7 +32,11 @@ export class AnnouncementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cols = Math.round(window.innerWidth / 750);
     this.searchAnnouncements();
+  }
+  onResize(event: any) {
+    this.cols = Math.round(event.target.innerWidth / 750);
   }
 
   searchAnnouncements() {

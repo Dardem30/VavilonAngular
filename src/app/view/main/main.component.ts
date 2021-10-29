@@ -41,7 +41,6 @@ import {MessagesComponent} from "../messages/messages.component";
 import {ApproveAnnouncementOverviewComponent} from "../approveAnnouncementOverview/approveAnnouncementOverview.component";
 import {ModerationStatus} from "../../bo/announcement/ModerationStatus";
 import {ProfileComponent} from "../profile/profile.component";
-import Swal from "sweetalert2";
 
 declare const google: any;
 
@@ -430,11 +429,6 @@ export class MainComponent implements OnInit, AfterViewInit {
             profileInfo.photo = profileInfo.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
             AppComponent.profileInfo = profileInfo;
             AppComponent.profileInfo.loggedIn = true;
-          }, error => {
-            Swal.fire({
-              icon: 'warning',
-              html: AppComponent.locale.label.msgCookiesAreDisabled
-            });
           });
           this.initializeWebSocketConnection();
         } else {

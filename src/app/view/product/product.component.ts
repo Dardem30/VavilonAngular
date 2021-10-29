@@ -18,6 +18,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class ProductComponent implements OnInit {
   products: ProductOverviewItem[] = [];
+  cols = 3;
   selectedProducts: number[] = [];
   @ViewChild('paginator') paginator: MatPaginator;
   productsSearchForm: any = {
@@ -54,7 +55,10 @@ export class ProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchProducts();
+    this.searchProducts();this.cols = Math.round(window.innerWidth / 750);
+  }
+  onResize(event: any) {
+    this.cols = Math.round(event.target.innerWidth / 750);
   }
 
   openProductDetails(productId: any) {
