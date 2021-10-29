@@ -16,8 +16,8 @@ export enum Locale {
 })
 export class AppComponent {
   title = 'VavilonAngular';
-  // public static apiEndpoint = 'https://vavilon-dev.herokuapp.com/';
- public static apiEndpoint = 'http://localhost:8081/';
+   public static apiEndpoint = 'https://vavilon-dev.herokuapp.com/';
+ //public static apiEndpoint = 'http://localhost:8081/';
   public static profileInfo: ProfileInfo = {
     active: false,
     email: "",
