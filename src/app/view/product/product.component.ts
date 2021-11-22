@@ -197,14 +197,17 @@ export class ProductDetails implements OnInit{
               scope.data.productService.updateMainPhoto(productId, mainImageId).subscribe((result: any) => {
                 scope.data.onCloseHandler();
                 scope.productCloseButton.nativeElement.click();
+                AppComponent.showLoadingMask = false;
               })
             } else {
               scope.data.onCloseHandler();
               scope.productCloseButton.nativeElement.click();
+              AppComponent.showLoadingMask = false;
             }
           } else {
             scope.data.onCloseHandler();
             scope.productCloseButton.nativeElement.click();
+            AppComponent.showLoadingMask = false;
           }
         })
       })

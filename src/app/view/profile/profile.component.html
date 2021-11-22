@@ -25,9 +25,9 @@
     <mat-divider></mat-divider>
     <div class="body-content">
       <ul>
-        <li><a href="#" [class]="activeTab == tabs.HOME ? 'active' : ''" (click)="changeTab(tabs.HOME)">Home</a></li>
+        <li><a href="#" [class]="activeTab == tabs.HOME ? 'active' : ''" (click)="changeTab(tabs.HOME)">{{locale().label.labelHome}}</a></li>
         <li><a href="#" [class]="activeTab == tabs.ANNOUNCEMENTS ? 'active' : ''"
-               (click)="changeTab(tabs.ANNOUNCEMENTS)">Announcements</a></li>
+               (click)="changeTab(tabs.ANNOUNCEMENTS)">{{locale().label.labelAnnouncements}}</a></li>
       </ul>
 
       <div *ngIf="activeTab == tabs.HOME">
@@ -48,7 +48,7 @@
           </div>
           <div class="card bg-dark">
             <p>{{locale().label.averageRate}}</p>
-            <p class="num">{{userProfileInfo.averageRate == null ? 0 : userProfileInfo.averageRate}}</p>
+            <p class="num">{{userProfileInfo.averageRate == null ? locale().label.notRated : userProfileInfo.averageRate}}</p>
           </div>
           <div class="card">
             <p>{{locale().label.announcements}}</p>

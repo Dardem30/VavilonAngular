@@ -81,7 +81,7 @@ export const label = {
   uploadImages: 'Upload images',
   mainImage: 'Main',
   delete: 'Delete',
-  info: 'Info',
+  info: 'Information',
   comments: 'Comments',
   averageRate: 'Average rate',
   announcements: 'Announcements',
@@ -117,5 +117,11 @@ export const label = {
   msgCookiesAreDisabled: 'According to your browser preferences we can\'t store third party cookies. ' +
     '<br>It means that you will not be able to sign in to your account. ' +
     '<br>Please if you want to use your account allow storing cookies in your browser' +
-    '<br>How to do it in chrome - <a target="_blank" href="https://support.google.com/accounts/answer/61416?hl=en&co=GENIE.Platform%3DDesktop">link</a>'
+    '<br>How to do it in chrome - <a target="_blank" href="https://support.google.com/accounts/answer/61416?hl=en&co=GENIE.Platform%3DDesktop">link</a>',
+  getLinkForRestoringPassword: 'Get restore password link',
+  msgRestorePasswordLinkIsSendOnTheEmail: 'Reset password link is sent on your email. Please use that link to reset password',
+  resetPassword: 'Reset password',
+  labelHome: 'Home',
+  labelAnnouncements: 'Announcements',
+  notRated: 'Not rated'
 }

@@ -55,4 +55,17 @@ export class SecurityService {
       withCredentials: true
     });
   }
+
+  sendResetPasswordEmail(email) {
+    console.log(email);
+    return this.http.post<any>(AppComponent.apiEndpoint + 'sendResetPasswordEmail', email, {
+      headers: {
+        'Content-type': 'text/plain'
+      }
+    });
+  }
+
+  resetPassword(resetPasswordModel: any) {
+    return this.http.post<any>(AppComponent.apiEndpoint + 'resetPassword', resetPasswordModel);
+  }
 }

@@ -41,13 +41,13 @@ export const label = {
   close: 'Закрыть',
   readyForReview: 'Готово для модерации',
   moderationStatus: 'Статус модерации',
-  selectContacts: '[Выберать контакты]',
-  selectAnnouncementType: '[Выберать тип объявления]',
-  selectMeasure: '[Выберать объем]',
+  selectContacts: '[Выбрать контакты]',
+  selectAnnouncementType: '[Выбрать тип объявления]',
+  selectMeasure: '[Выбрать объем]',
   addProduct: 'Добавить продукт',
-  select: 'Выберать',
+  select: 'Выбрать',
   price: 'Цена',
-  selectCurrencySign: '[Выберать валюту]',
+  selectCurrencySign: '[Выбрать валюту]',
   markTerritoryForDelivery: 'Обозначте территорию для доставки',
   volume: 'Объем',
   edit: 'Изменить',
@@ -63,7 +63,7 @@ export const label = {
   announcement: 'Объявление',
   sellerProfile: 'Профиль продавца',
   chat: 'Чат',
-  selectModerationStatus: '[Выберать статус модерации]',
+  selectModerationStatus: '[Выбрать статус модерации]',
   updateModerationStatus: 'Изменить статус модерации',
   copy: 'Скопировать',
   territoryForDelivery: 'Территория доставки',
@@ -117,5 +117,11 @@ export const label = {
   msgCookiesAreDisabled: 'Согласно настройкам вашего браузера мы не можем хранить cookies. ' +
     '<br>Это значит что вы не сможете использовать свой аккаунт. ' +
     '<br>Пожалуйста если вы хотите войти в ваш аккаунт - разрешите нам хранить файлы cookies' +
-    '<br>Как сделать это в браузере chrome - <a target="_blank" href="https://support.google.com/accounts/answer/61416?hl=en&co=GENIE.Platform%3DDesktop">ссылка</a>'
+    '<br>Как сделать это в браузере chrome - <a target="_blank" href="https://support.google.com/accounts/answer/61416?hl=en&co=GENIE.Platform%3DDesktop">ссылка</a>',
+  getLinkForRestoringPassword: 'Получить ссылку для восстановления пароля',
+  msgRestorePasswordLinkIsSendOnTheEmail: 'Ссылка для восстановления пароля отправлена на ваш email. Пожалуйста используйте её для восстановления пароля',
+  resetPassword: 'Изменить пароль',
+  labelHome: 'Главная',
+  labelAnnouncements: 'Объявления',
+  notRated: 'Нет оценок'
 }

@@ -79,6 +79,7 @@ export class AnnouncementViewerComponent implements AfterViewInit {
     this.announcementService.gallery(this.announcementId).subscribe(result => {
       this.images = result
     });
+    console.log(this.getProfileInfo())
   }
 
   drawPolygon() {

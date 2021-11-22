@@ -155,7 +155,7 @@
         <form #forgotPasswordForm [ngStyle]="{display: authState != authStates.ForgotPassword ? 'none' : 'block'}">
           <mat-form-field appearance="fill" style="width: 100%">
             <mat-label style="color: white; opacity: 0.5">{{locale().label.email}}</mat-label>
-            <input matInput type="email" [(ngModel)]="forgotPasswordModel.email">
+            <input matInput type="email" #forgotPasswordEmail>
           </mat-form-field>
         </form>
 
@@ -218,6 +218,26 @@
             </mat-error>
           </mat-form-field>
         </div>
+        <div #resetPasswordForm [ngStyle]="{display: authState != authStates.ResetPassword ? 'none' : 'block'}">
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.password}}</mat-label>
+            <input matInput type="password" [(ngModel)]="resetPasswordModel.password"
+                   [formControl]="resetPasswordFormPasswordValidator" [errorStateMatcher]="matcher">
+            <mat-error *ngIf="resetPasswordFormPasswordValidator.invalid">
+              <p [innerHTML]="locale().label.msgInvalidPassword"></p>
+            </mat-error>
+          </mat-form-field>
+          <div *ngIf="resetPasswordFormPasswordValidator.touched && resetPasswordFormPasswordValidator.invalid" style="height: 20px"></div>
+          <br>
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.confirmPassword}}</mat-label>
+            <input matInput type="password" [(ngModel)]="resetPasswordModel.confirmPassword"
+                   [formControl]="resetPasswordFormConfirmPasswordValidator" [errorStateMatcher]="matcher">
+            <mat-error *ngIf="resetPasswordFormConfirmPasswordValidator.invalid">
+              <p [innerHTML]="locale().label.msgPasswordsAreNotTheSame"></p>
+            </mat-error>
+          </mat-form-field>
+        </div>
         <mat-divider></mat-divider>
 
         <button *ngIf="authState == authStates.Login" mat-button class="menu-button"
@@ -245,7 +265,20 @@
                 (click)="activateUser()">
           <span>{{locale().label.submit}}</span>
         </button>
-        <button *ngIf="authState == authStates.Registration || authState == authStates.VerificationCode || authState == authStates.ForgotPassword" mat-button
+        <button *ngIf="authState == authStates.ResetPassword" mat-button class="menu-button"
+                style="display: block;margin: auto;"
+                (click)="resetPassword()">
+          <span>{{locale().label.resetPassword}}</span>
+        </button>
+        <button *ngIf="authState == authStates.ForgotPassword" mat-button
+                class="menu-button" style="display: block;margin: auto;"
+                (click)="sendResetPasswordEmail()">
+          <span>{{locale().label.getLinkForRestoringPassword}}</span>
+        </button>
+        <button *ngIf="authState == authStates.Registration
+        || authState == authStates.VerificationCode
+        || authState == authStates.ResetPassword
+        || authState == authStates.ForgotPassword" mat-button
                 class="menu-button" style="display: block;margin: auto;"
                 (click)="switchAuthForm(authStates.Login)">
           <span>{{locale().label.signIn}}</span>

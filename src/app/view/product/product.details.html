@@ -1,4 +1,4 @@
-  <style>
+ <style>
   br {
     margin-bottom: 10px;
   }
@@ -9,6 +9,7 @@
 </style>
 <h2>{{locale().label.productDetails}}</h2>
 <mat-divider style="margin-bottom: 10px"></mat-divider>
+ <div style="overflow-y: auto;overflow-x: hidden; max-height: 600px;padding: 10px">
 <mat-form-field appearance="fill" [formGroup]="productForm">
   <mat-label>{{locale().label.productName}}</mat-label>
   <input matInput [(ngModel)]="product.name" formControlName="name" required>
@@ -54,3 +55,4 @@
     {{locale().label.close}}
   </button>
 </div>
+ </div>

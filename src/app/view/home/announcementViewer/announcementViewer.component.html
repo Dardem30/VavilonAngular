@@ -74,7 +74,7 @@
     {{locale().label.sellerProfile}}
   </button>
   <button mat-raised-button mat-dialog-close style="margin-right: 10px; display: inline-block" (click)="chat()"
-          *ngIf="getProfileInfo().loggedIn">
+          *ngIf="getProfileInfo().loggedIn && announcement.user != null && announcement.user.userId !== getProfileInfo().userId">
     {{locale().label.chat}}
   </button>
   <ngx-material-rating [(ngModel)]="announcement.rating" [max]="5"

@@ -41,6 +41,7 @@ import {MessagesComponent} from "../messages/messages.component";
 import {ApproveAnnouncementOverviewComponent} from "../approveAnnouncementOverview/approveAnnouncementOverview.component";
 import {ModerationStatus} from "../../bo/announcement/ModerationStatus";
 import {ProfileComponent} from "../profile/profile.component";
+import Swal from "sweetalert2";
 
 declare const google: any;
 
@@ -80,8 +81,9 @@ export class MainComponent implements OnInit, AfterViewInit {
     confirmPassword: null,
     email: null
   };
-  forgotPasswordModel: any = {
-    email: null
+  resetPasswordModel: any = {
+    password: null,
+    confirmPassword: null
   };
   openChat = true;
   heightChecked = false;
@@ -99,9 +101,11 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('paginator') paginator: MatPaginator;
   @ViewChild('loginForm') loginForm: ElementRef;
   @ViewChild('forgotPasswordForm') forgotPasswordForm: ElementRef;
+  @ViewChild('forgotPasswordEmail') forgotPasswordEmail: ElementRef;
   @ViewChild('chatHistory') chatHistory: ElementRef;
   @ViewChild('mainContainer') mainContainer;
   @ViewChild('registrationForm') registrationForm: ElementRef;
+  @ViewChild('resetPasswordForm') resetPasswordForm: ElementRef;
   @ViewChild('verificationForm') verificationForm: ElementRef;
   @ViewChild('authSideNav') authSideNav: MatSidenav;
   @ViewChild('sidenav') profileSideNav: MatSidenav;
@@ -156,9 +160,16 @@ export class MainComponent implements OnInit, AfterViewInit {
       scope.initializeWebSocketConnection();
     };
     const activateUser = localStorage.getItem('activateUser');
+    const token = localStorage.getItem('token');
     if (activateUser != null && activateUser == 'true') {
       localStorage.setItem('activateUser', 'false');
       this.authState = this.authStates.VerificationCode;
+      const scope = this;
+      setTimeout(function () {
+        scope.authSideNav.toggle();
+      }, 500)
+    } else if (token != null) {
+      this.authState = this.authStates.ResetPassword;
       const scope = this;
       setTimeout(function () {
         scope.authSideNav.toggle();
@@ -453,6 +464,22 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
   }
 
+  resetPassword() {
+    if (!this.isResetPasswordFormInvalid()) {
+      this.resetPasswordModel.token = localStorage.getItem('token');
+      this.resetPasswordModel.userId = parseInt(localStorage.getItem('userId'))
+      this.securityService.resetPassword(this.resetPasswordModel).subscribe(result => {
+        localStorage.removeItem('token');
+        if (result.success) {
+          this.authSideNavErrorMessage = '';
+          this.switchAuthForm(this.authStates.Login);
+        } else {
+          this.authSideNavErrorMessage = result.message
+        }
+      }, () => this.authSideNavErrorMessage = 'Something is wrong on our side. Please contact administrator')
+    }
+  }
+
   activateUser() {
     if (!this.isVerificationCodeFormInvalid()) {
       // @ts-ignore
@@ -546,18 +573,31 @@ export class MainComponent implements OnInit, AfterViewInit {
   registrationLoginValidator = new FormControl('', [
     Validators.required
   ]);
+  checkPasswords: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => {
+    return group.value === this.registrationModel.password ? null : { notSame: true }
+  }
+  checkResetPasswords: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => {
+    return group.value === this.resetPasswordModel.password ? null : { notSame: true }
+  }
   registrationPasswordValidator = new FormControl('', [
     Validators.required,
     Validators.minLength(6),
     Validators.maxLength(18),
     Validators.pattern(/^([0-9]+[a-zA-Z]+|[a-zA-Z]+[0-9]+)[0-9a-zA-Z]*$/)
   ]);
-  checkPasswords: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => {
-    return group.value === this.registrationModel.password ? null : { notSame: true }
-  }
+  resetPasswordFormPasswordValidator = new FormControl('', [
+    Validators.required,
+    Validators.minLength(6),
+    Validators.maxLength(18),
+    Validators.pattern(/^([0-9]+[a-zA-Z]+|[a-zA-Z]+[0-9]+)[0-9a-zA-Z]*$/)
+  ]);
   registrationConfirmPasswordValidator = new FormControl(this, [
     Validators.required,
     this.checkPasswords
+  ]);
+  resetPasswordFormConfirmPasswordValidator = new FormControl(this, [
+    Validators.required,
+    this.checkResetPasswords
   ]);
   emailValidator = new FormControl('', [
     Validators.required,
@@ -572,6 +612,10 @@ export class MainComponent implements OnInit, AfterViewInit {
       || this.registrationPasswordValidator.invalid
       || this.registrationConfirmPasswordValidator.invalid
       || this.emailValidator.invalid
+  }
+  isResetPasswordFormInvalid() {
+    return this.resetPasswordFormPasswordValidator.invalid
+      || this.resetPasswordFormConfirmPasswordValidator.invalid
   }
 
   slideToggle() {
@@ -662,6 +706,12 @@ export class MainComponent implements OnInit, AfterViewInit {
     message.createTime = new Date();
     message.text = chatMessageField.value;
     if (this.conversation == null) {
+      console.log(message);
+      message.user.firstName = this.getProfileInfo().firstName;
+      message.user.lastName = this.getProfileInfo().lastName;
+      if (this.getProfileInfo().photo != null && this.getProfileInfo().photo != 'assets/nophoto.png') {
+        message.user.photo = this.getProfileInfo().photo.replace('https://drive.google.com/uc?export=view&id=', '');
+      }
       this.messageService.startConversation(message, this.getUserIdsInCurrentConversation()).subscribe(conversation => {
         this.messages.push(message);
         this.conversation = conversation;
@@ -736,13 +786,34 @@ export class MainComponent implements OnInit, AfterViewInit {
       marker.setMap(null);
     }
   }
+
+  sendResetPasswordEmail() {
+    this.securityService.sendResetPasswordEmail(this.forgotPasswordEmail.nativeElement.value).subscribe(result => {
+      if (result.success) {
+        this.authSideNavErrorMessage = '';
+        Swal.fire({
+          icon: 'info',
+          text: this.locale().label.msgRestorePasswordLinkIsSendOnTheEmail
+        }).then((result) => {
+          this.switchAuthForm(AuthState.Login);
+          const scope = this;
+          setTimeout(function () {
+            scope.authSideNav.toggle();
+          }, 500)
+        })
+      } else {
+        this.authSideNavErrorMessage = result.message
+      }
+    })
+  }
 }
 
 export enum AuthState {
   Login,
   Registration,
   VerificationCode,
-  ForgotPassword
+  ForgotPassword,
+  ResetPassword
 }
 
 export enum MainTabs {

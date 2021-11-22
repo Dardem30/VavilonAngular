@@ -194,7 +194,7 @@ mat-divider {
 }
 
 .chat {
-  background: #fff;
+  background-color: #f7f7f7;
   -webkit-transition: all 1s ease-in-out;
   transition: all 1s ease-in-out;
   width: 100%;

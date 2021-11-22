@@ -246,8 +246,14 @@ export class AnnouncementDetailsComponent implements AfterViewInit, OnInit {
           scope.productService.search(scope.productsSearchForm).subscribe(result => {
             scope.products = result.result
             scope.productsSearchForm.total = result.total;
-            for (let product of scope.products) {
-              product.selectedForAnnouncement = scope.announcement.product.productId == product.productId;
+            if (scope.announcement.product != null) {
+              for (let product of scope.products) {
+                product.selectedForAnnouncement = scope.announcement.product.productId == product.productId;
+              }
+            } else {
+              for (let product of scope.products) {
+                product.selectedForAnnouncement = false;
+              }
             }
           });
         }

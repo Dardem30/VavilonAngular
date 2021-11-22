@@ -41,12 +41,22 @@ export class AppComponent {
               securityService: SecurityService) {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const userId = urlSearchParams.get('userId');
+    const token = urlSearchParams.get('token');
     const activateUser = urlSearchParams.get('activateUser');
     if (userId != null) {
       localStorage.setItem('userId', userId);
+    } else {
+      localStorage.removeItem('userId');
+    }
+    if (token != null) {
+      localStorage.setItem('token', token);
+    } else {
+      localStorage.removeItem('token');
     }
     if (activateUser != null) {
       localStorage.setItem('activateUser', activateUser);
+    } else {
+      localStorage.removeItem('activateUser');
     }
     securityService.getProfileInfo().subscribe(profileInfo => {
       profileInfo.photo = profileInfo.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
