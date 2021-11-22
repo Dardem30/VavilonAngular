@@ -123,5 +123,7 @@ export const label = {
   resetPassword: 'Reset password',
   labelHome: 'Home',
   labelAnnouncements: 'Announcements',
-  notRated: 'Not rated'
+  notRated: 'Not rated',
+  newPassword: 'New password',
+  pleaseEnterYourNewPasswordBelow: 'Please enter your new password below'
 }

@@ -67,6 +67,7 @@ mat-divider {
 #live-chat {
   z-index: 5000;
   bottom: 0;
+  height: 400px;
   font-size: 12px;
   left: 24px;
   position: fixed;

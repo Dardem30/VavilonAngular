@@ -123,5 +123,7 @@ export const label = {
   resetPassword: 'Изменить пароль',
   labelHome: 'Главная',
   labelAnnouncements: 'Объявления',
-  notRated: 'Нет оценок'
+  notRated: 'Нет оценок',
+  newPassword: 'Новый пароль',
+  pleaseEnterYourNewPasswordBelow: 'Пожалуйста введите ваш новый пароль'
 }

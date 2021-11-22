@@ -120,6 +120,8 @@
             *ngIf="authState == authStates.Registration">{{locale().label.labelPleaseFillAllTheFieldsForSignUp}}</h4>
         <h4 class="designation"
             *ngIf="authState == authStates.VerificationCode">{{locale().label.pleaseEnterTheCodeWhichIsSentOnEmail}} {{verificationEmail}}</h4>
+        <h4 class="designation"
+            *ngIf="authState == authStates.ResetPassword">{{locale().label.pleaseEnterYourNewPasswordBelow}}</h4>
         <mat-divider></mat-divider>
 
 
@@ -220,7 +222,7 @@
         </div>
         <div #resetPasswordForm [ngStyle]="{display: authState != authStates.ResetPassword ? 'none' : 'block'}">
           <mat-form-field appearance="fill" style="width: 100%">
-            <mat-label style="color: white; opacity: 0.5">{{locale().label.password}}</mat-label>
+            <mat-label style="color: white; opacity: 0.5">{{locale().label.newPassword}}</mat-label>
             <input matInput type="password" [(ngModel)]="resetPasswordModel.password"
                    [formControl]="resetPasswordFormPasswordValidator" [errorStateMatcher]="matcher">
             <mat-error *ngIf="resetPasswordFormPasswordValidator.invalid">

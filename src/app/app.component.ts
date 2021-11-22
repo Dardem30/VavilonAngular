@@ -58,6 +58,7 @@ export class AppComponent {
     } else {
       localStorage.removeItem('activateUser');
     }
+    window.history.pushState({}, document.title, "/");
     securityService.getProfileInfo().subscribe(profileInfo => {
       profileInfo.photo = profileInfo.photo == null ? 'assets/nophoto.png' : 'https://drive.google.com/uc?export=view&id=' + profileInfo.photo;
       AppComponent.profileInfo = profileInfo;
